@@ -152,7 +152,7 @@
             this.Controls.Add(this.load_butt);
             this.Controls.Add(this.drawing_surface);
             this.Name = "main_window";
-            this.Text = "Form1";
+            this.Text = "MeasDists";
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
