@@ -17,6 +17,7 @@ namespace MeasDists
         int sys_state = 0;
         bool grid_toggle_grid = false;
         float ref_mm;
+        float   mm_per_pixel;
 
         Point ref_p1;
         Point ref_p2;
@@ -172,6 +173,7 @@ namespace MeasDists
                     ref_p2 = new Point(e.Location.X, e.Location.Y);
                     sys_state = 4;
 
+
                     Inputbox ref_input_box = new Inputbox(this);
                     ref_input_box.Show();
 
@@ -197,6 +199,13 @@ namespace MeasDists
                     }
                     drawing_surface.Image = (Image)source_image.Clone();
 
+                    // draw grid at rotated image if toggled on.
+                    if (grid_toggle_grid)
+                    {
+                        drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                    }
+                    //
+
                     Graphics g_ = Graphics.FromImage(drawing_surface.Image);
                     Pen p_black = new Pen(Color.Black, 1);
                     g_.DrawLine(p_black, ref_p1, new Point(e.Location.X, e.Location.Y));
@@ -216,11 +225,23 @@ namespace MeasDists
             }
         }
 
-        public void SetRef_mm(float f_)
+        public void SetRef_mm(float f_, bool valid_)
         {
-            if (f_ != 0.0f)
+            if (valid_)
             {
-                ref_mm = f_;
+                if (f_ != 0.0f)
+                {
+                    ref_mm = f_;
+                    sys_state = 5;
+                    set_ref_butt.Enabled = false;
+
+                    double ref_len_pxl = Math.Sqrt( Math.Pow(Math.Abs( ref_p1.X - ref_p2.X ), 2) + Math.Pow(Math.Abs(ref_p1.Y - ref_p2.Y), 2));
+                    mm_per_pixel = ref_mm / Convert.ToSingle(ref_len_pxl);
+                }
+            }
+            else
+            {
+                sys_state = 4;
             }
         }
     }

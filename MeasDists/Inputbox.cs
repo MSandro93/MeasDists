@@ -47,8 +47,13 @@ namespace MeasDists
                 return;
             }
 
-            parent_.SetRef_mm(ref_val);
+            parent_.SetRef_mm(ref_val, true);
             this.Close();
+        }
+
+        private void Inputbox_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            parent_.SetRef_mm(0.0f, false);
         }
     }
 }
