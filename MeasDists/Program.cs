@@ -16,7 +16,8 @@ namespace MeasDists
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            main_window main_window_ = new main_window();
+            Application.Run(main_window_);
         }
     }
 }

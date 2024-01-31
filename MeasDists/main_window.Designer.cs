@@ -1,6 +1,6 @@
 ﻿namespace MeasDists
 {
-    partial class Form1
+    partial class main_window
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -35,18 +35,21 @@
             this.toggle_grid_butt = new System.Windows.Forms.Button();
             this.rotate_scrollBar = new System.Windows.Forms.HScrollBar();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.set_ref_butt = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // drawing_surface
             // 
+            this.drawing_surface.Cursor = System.Windows.Forms.Cursors.Cross;
             this.drawing_surface.Location = new System.Drawing.Point(12, 12);
             this.drawing_surface.Name = "drawing_surface";
             this.drawing_surface.Size = new System.Drawing.Size(940, 560);
             this.drawing_surface.TabIndex = 0;
             this.drawing_surface.TabStop = false;
+            this.drawing_surface.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawing_surface_MouseClick);
+            this.drawing_surface.MouseMove += new System.Windows.Forms.MouseEventHandler(this.drawing_surface_MouseMove);
             // 
             // load_butt
             // 
@@ -90,22 +93,22 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "adjust rotation";
             // 
-            // button1
+            // set_ref_butt
             // 
-            this.button1.Location = new System.Drawing.Point(977, 149);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(141, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "&Set reference";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.set_ref_butt.Location = new System.Drawing.Point(977, 149);
+            this.set_ref_butt.Name = "set_ref_butt";
+            this.set_ref_butt.Size = new System.Drawing.Size(141, 23);
+            this.set_ref_butt.TabIndex = 5;
+            this.set_ref_butt.Text = "&Set reference";
+            this.set_ref_butt.UseVisualStyleBackColor = true;
+            this.set_ref_butt.Click += new System.EventHandler(this.set_ref_butt_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 647);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.set_ref_butt);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rotate_scrollBar);
             this.Controls.Add(this.toggle_grid_butt);
@@ -128,7 +131,7 @@
         private System.Windows.Forms.Button toggle_grid_butt;
         private System.Windows.Forms.HScrollBar rotate_scrollBar;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button set_ref_butt;
     }
 }
 
