@@ -65,7 +65,10 @@ namespace MeasDists
             }
             drawing_surface.Image = (Image)source_image.Clone();
 
-            apply_roation(drawing_surface.Image, rotate_scrollBar.Value / 10.0f);
+            if (sys_state < 5) //before the rotation slider is locked, the source image stays unmodified in memory. After lokcking the rotation, the source iamge is overwritten in memory. Applying the rotation again to it leads to additional rotation which shall not happen
+            {
+                drawing_surface.Image = apply_roation(drawing_surface.Image, rotate_scrollBar.Value / 10.0f);
+            }
 
             if (grid_toggle_grid)
             {
@@ -85,19 +88,14 @@ namespace MeasDists
             }
             drawing_surface.Image = (Image)source_image.Clone();
 
-            
 
-            apply_roation(drawing_surface.Image, rotate_scrollBar.Value / 10.0f);
+
+            drawing_surface.Image = apply_roation(drawing_surface.Image, rotate_scrollBar.Value / 10.0f);
 
             // draw grid at rotated image if toggled on.
             if (grid_toggle_grid)
             {
                 drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
-            }
-
-            else
-            {
-                drawing_surface.Image = drawing_surface.Image;              
             }
             //
 
@@ -114,9 +112,6 @@ namespace MeasDists
             //apply current rotation to source iamge, thus rotation scroll bar is locked and rotation is fixed now
             source_image = apply_roation(source_image, rotate_scrollBar.Value / 10.0f);
             //
-
-
-
         }
 
         private Image apply_roation(Image img_, float angle_)
@@ -126,7 +121,6 @@ namespace MeasDists
             g_.TranslateTransform(img_.Width / 2.0f, img_.Height / 2.0f); //set rotation point to center
             g_.RotateTransform((float)rotate_scrollBar.Value / 10.0f);
             g_.TranslateTransform((float)-img_.Width / 2.0f, (float)-img_.Height / 2.0f);
-       //     g_.ResetTransform();
             g_.DrawImage(img_, 0, 0);  //"save" rotated image.
             return img_;
             //
@@ -293,6 +287,7 @@ namespace MeasDists
                     measurements.Add(new Measurement(ref_p1, ref_p2, new PointF(ref_p1.X * mm_per_pixel, ref_p1.Y * mm_per_pixel), new PointF(ref_p2.X * mm_per_pixel, ref_p2.Y * mm_per_pixel), "ref"));
                     updateListBox();
                     draw_measuremnts("");
+                    add_measurement_butt.Enabled=true;
                 }
             }
             else

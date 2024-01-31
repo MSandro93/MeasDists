@@ -117,6 +117,7 @@
             // 
             // add_measurement_butt
             // 
+            this.add_measurement_butt.Enabled = false;
             this.add_measurement_butt.Location = new System.Drawing.Point(977, 449);
             this.add_measurement_butt.Name = "add_measurement_butt";
             this.add_measurement_butt.Size = new System.Drawing.Size(141, 29);
