@@ -36,6 +36,9 @@
             this.rotate_scrollBar = new System.Windows.Forms.HScrollBar();
             this.label1 = new System.Windows.Forms.Label();
             this.set_ref_butt = new System.Windows.Forms.Button();
+            this.measurements_ListBox = new System.Windows.Forms.ListBox();
+            this.add_measurement_butt = new System.Windows.Forms.Button();
+            this.remove_measurement_butt = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -103,18 +106,51 @@
             this.set_ref_butt.UseVisualStyleBackColor = true;
             this.set_ref_butt.Click += new System.EventHandler(this.set_ref_butt_Click);
             // 
-            // Form1
+            // measurements_ListBox
+            // 
+            this.measurements_ListBox.FormattingEnabled = true;
+            this.measurements_ListBox.Location = new System.Drawing.Point(977, 192);
+            this.measurements_ListBox.Name = "measurements_ListBox";
+            this.measurements_ListBox.Size = new System.Drawing.Size(141, 238);
+            this.measurements_ListBox.TabIndex = 6;
+            this.measurements_ListBox.SelectedValueChanged += new System.EventHandler(this.measurements_ListBox_SelectedValueChanged);
+            // 
+            // add_measurement_butt
+            // 
+            this.add_measurement_butt.Location = new System.Drawing.Point(977, 449);
+            this.add_measurement_butt.Name = "add_measurement_butt";
+            this.add_measurement_butt.Size = new System.Drawing.Size(141, 29);
+            this.add_measurement_butt.TabIndex = 7;
+            this.add_measurement_butt.Text = "&Add measurement";
+            this.add_measurement_butt.UseVisualStyleBackColor = true;
+            this.add_measurement_butt.Click += new System.EventHandler(this.add_measurement_butt_Click);
+            // 
+            // remove_measurement_butt
+            // 
+            this.remove_measurement_butt.Enabled = false;
+            this.remove_measurement_butt.Location = new System.Drawing.Point(977, 493);
+            this.remove_measurement_butt.Name = "remove_measurement_butt";
+            this.remove_measurement_butt.Size = new System.Drawing.Size(141, 29);
+            this.remove_measurement_butt.TabIndex = 8;
+            this.remove_measurement_butt.Text = "&Remove measurement";
+            this.remove_measurement_butt.UseVisualStyleBackColor = true;
+            this.remove_measurement_butt.Click += new System.EventHandler(this.remove_measurement_butt_Click);
+            // 
+            // main_window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 647);
+            this.Controls.Add(this.remove_measurement_butt);
+            this.Controls.Add(this.add_measurement_butt);
+            this.Controls.Add(this.measurements_ListBox);
             this.Controls.Add(this.set_ref_butt);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rotate_scrollBar);
             this.Controls.Add(this.toggle_grid_butt);
             this.Controls.Add(this.load_butt);
             this.Controls.Add(this.drawing_surface);
-            this.Name = "Form1";
+            this.Name = "main_window";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
@@ -132,6 +168,9 @@
         private System.Windows.Forms.HScrollBar rotate_scrollBar;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button set_ref_butt;
+        private System.Windows.Forms.ListBox measurements_ListBox;
+        private System.Windows.Forms.Button add_measurement_butt;
+        private System.Windows.Forms.Button remove_measurement_butt;
     }
 }
 

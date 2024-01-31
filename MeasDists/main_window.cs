@@ -17,12 +17,18 @@ namespace MeasDists
         int sys_state = 0;
         bool grid_toggle_grid = false;
         float ref_mm;
-        float   mm_per_pixel;
+        float mm_per_pixel;
 
         Point ref_p1;
         Point ref_p2;
 
+        Point current_p1;
+        Point current_p2;
+
         Pen p_black = new Pen(Color.Black, 1);
+        Pen p_red = new Pen(Color.Red, 1);
+
+        List<Measurement> measurements = new List<Measurement>();
 
         public main_window()
         {
@@ -64,14 +70,10 @@ namespace MeasDists
             if (grid_toggle_grid)
             {
                 draw_grid(drawing_surface.Image, 10, 10);
-                drawing_surface.Refresh();
             }
 
-            else
-            {
-                drawing_surface.Refresh();
-                return;
-            }
+            draw_measuremnts("");
+            drawing_surface.Refresh();
         }
 
         private void rotate_scrollBar_ValueChanged(object sender, EventArgs e)
@@ -91,17 +93,16 @@ namespace MeasDists
             if (grid_toggle_grid)
             {
                 drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
-                drawing_surface.Refresh();
             }
 
             else
             {
-                drawing_surface.Image = drawing_surface.Image;
-                drawing_surface.Refresh();
-                return;
+                drawing_surface.Image = drawing_surface.Image;              
             }
             //
 
+            //draw_measuremnts()  // not needed here, because rotating only allowed before setting reference or markers.
+            drawing_surface.Refresh();
         }
 
 
@@ -110,7 +111,7 @@ namespace MeasDists
             sys_state = 2;
             rotate_scrollBar.Enabled = false;
 
-            //apply current rotaion so source iamge, thus rotation scroll bar is locked and rotation is fixed now
+            //apply current rotation to source iamge, thus rotation scroll bar is locked and rotation is fixed now
             source_image = apply_roation(source_image, rotate_scrollBar.Value / 10.0f);
             //
 
@@ -134,14 +135,13 @@ namespace MeasDists
 
         private Image draw_grid(Image img_, int cnt_x, int cnt_y)
         {
-            Pen p_ = new Pen(Color.Red, 1);
             Graphics g_ = Graphics.FromImage(img_);
 
             //draw 10 vertical grid lines
             int width_grid = (int)(drawing_surface.Width / 10.0f);
             for (int x_ = width_grid; x_ < drawing_surface.Width; x_ += width_grid)
             {
-                g_.DrawLine(p_, x_, 0, x_, drawing_surface.Height);
+                g_.DrawLine(p_red, x_, 0, x_, drawing_surface.Height);
             }
             //
 
@@ -149,7 +149,7 @@ namespace MeasDists
             int height_grid = (int)(drawing_surface.Height / 10.0f);
             for (int y_ = height_grid; y_ < drawing_surface.Height; y_ += height_grid)
             {
-                g_.DrawLine(p_, 0, y_, drawing_surface.Width, y_);
+                g_.DrawLine(p_red, 0, y_, drawing_surface.Width, y_);
             }
             //
 
@@ -180,9 +180,35 @@ namespace MeasDists
                     break;
                 }
 
+                case 5:
+                {
+                    current_p1 = new Point(e.Location.X, e.Location.Y);
+                    sys_state = 6;
+                    break;
+                }
+
+                case 6:
+                {
+                    current_p2 = new Point(e.Location.X, e.Location.Y);
+                    sys_state = 5;
+
+                        measurements.Add(new Measurement(current_p1,
+                                                         current_p2,
+                                                         new PointF(current_p1.X * mm_per_pixel, current_p1.Y * mm_per_pixel),
+                                                         new PointF(current_p2.X * mm_per_pixel, current_p2.Y * mm_per_pixel),
+                                                         "M" + measurements.Count.ToString()
+                                                        )
+                                         );
+
+                        updateListBox();
+                        draw_measuremnts("");
+
+                    break;
+                }
+
                 default:
                 {
-                    break;
+                    break;  
                 }
             }
         }
@@ -207,10 +233,36 @@ namespace MeasDists
                     //
 
                     Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                    Pen p_black = new Pen(Color.Black, 1);
                     g_.DrawLine(p_black, ref_p1, new Point(e.Location.X, e.Location.Y));
                     g_.DrawImage(drawing_surface.Image, 0, 0);
                     g_.Dispose();
+                    draw_measuremnts("");
+                    drawing_surface.Refresh();
+
+
+                    break;
+                }
+
+                case 6:  //draw line from current_p1 to mouse position
+                {
+                    if (drawing_surface.Image != null)
+                    {
+                        drawing_surface.Image.Dispose();
+                    }
+                    drawing_surface.Image = (Image)source_image.Clone();
+
+                    // draw grid at rotated image if toggled on.
+                    if (grid_toggle_grid)
+                    {
+                        drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                    }
+                    //
+
+                    Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                    g_.DrawLine(p_black, current_p1, new Point(e.Location.X, e.Location.Y));
+                    g_.DrawImage(drawing_surface.Image, 0, 0);
+                    g_.Dispose();
+                    draw_measuremnts("");
                     drawing_surface.Refresh();
 
 
@@ -237,12 +289,96 @@ namespace MeasDists
 
                     double ref_len_pxl = Math.Sqrt( Math.Pow(Math.Abs( ref_p1.X - ref_p2.X ), 2) + Math.Pow(Math.Abs(ref_p1.Y - ref_p2.Y), 2));
                     mm_per_pixel = ref_mm / Convert.ToSingle(ref_len_pxl);
+
+                    measurements.Add(new Measurement(ref_p1, ref_p2, new PointF(ref_p1.X * mm_per_pixel, ref_p1.Y * mm_per_pixel), new PointF(ref_p2.X * mm_per_pixel, ref_p2.Y * mm_per_pixel), "ref"));
+                    updateListBox();
+                    draw_measuremnts("");
                 }
             }
             else
             {
                 sys_state = 4;
             }
+        }
+
+        public void updateListBox()
+        {
+            measurements_ListBox.Items.Clear();
+
+            foreach (Measurement m in measurements)
+            {
+                measurements_ListBox.Items.Add(m.name + " | " + m.len_mm.ToString("0.000")+"mm");
+            }
+        }
+
+        private void add_measurement_butt_Click(object sender, EventArgs e)
+        {
+            sys_state = 5;
+        }
+
+        private void draw_measuremnts(String selected)
+        {
+            foreach (Measurement m in measurements)
+            {
+                Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                if (m.name == selected)
+                {
+                    g_.DrawLine(p_red, m.a_px, m.b_px);
+                }
+                else
+                {
+                    g_.DrawLine(p_black, m.a_px, m.b_px);
+                }
+                
+                g_.DrawImage(drawing_surface.Image, 0, 0);
+                g_.Dispose();
+            }
+            drawing_surface.Refresh();
+        }
+
+        private void measurements_ListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            char[] separators = new char[] { ' ', '|' };
+            String s = measurements_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
+            draw_measuremnts(s);
+
+            remove_measurement_butt.Enabled = true;
+        }
+
+
+        private void remove_measurement_butt_Click(object sender, EventArgs e)
+        {
+            char[] separators = new char[] { ' ', '|' };
+            String text_selected = measurements_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
+
+            if (text_selected == "ref")
+            {
+                return;
+            }
+
+            foreach (Measurement m in measurements)
+            {
+                if (m.name == text_selected)
+                {
+                    measurements.Remove(m);
+                    break;
+                }
+            }
+
+            updateListBox();
+
+            if (drawing_surface.Image != null)
+            {
+                drawing_surface.Image.Dispose();
+            }
+            drawing_surface.Image = (Image)source_image.Clone();
+
+            if (grid_toggle_grid)
+            {
+                draw_grid(drawing_surface.Image, 10, 10);
+            }
+
+            draw_measuremnts("");
         }
     }
 }
