@@ -272,7 +272,7 @@ namespace MeasDists
 
                         sys_state = 4;
                         break;
-                    }
+                    } 
 
                 default:
                     {
