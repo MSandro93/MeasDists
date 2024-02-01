@@ -189,11 +189,12 @@ namespace MeasDists
                         current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
                         sys_state = 5;
 
+
                         measurements.Add(new Measurement(current_p1,
                                                          current_p2,
                                                          new System.Drawing.PointF(current_p1.X * mm_per_pixel, current_p1.Y * mm_per_pixel),
                                                          new System.Drawing.PointF(current_p2.X * mm_per_pixel, current_p2.Y * mm_per_pixel),
-                                                         "M" + measurements.Count.ToString()
+                                                         "M" + (measurements.Count).ToString()
                                                         )
                                          );
 
@@ -263,7 +264,7 @@ namespace MeasDists
                         }
                         //
 
-                        angle_measurements.Add(new Angle_Measurement(current_p1, current_p2, current_p3, angle, "A" + angle_measurements.Count+1.ToString()));
+                        angle_measurements.Add(new Angle_Measurement(current_p1, current_p2, current_p3, angle, "A" + (angle_measurements.Count+1).ToString()));
 
                         updateAngleListBox();
 
@@ -500,7 +501,6 @@ namespace MeasDists
             remove_measurement_butt.Enabled = true;
         }
 
-
         private void remove_measurement_butt_Click(object sender, EventArgs e)
         {
             char[] separators = new char[] { ' ', '|' };
@@ -567,7 +567,6 @@ namespace MeasDists
                 angle_measurement_ListBox.Items.Add(am.name + " | " + am.angle.ToString("0.0") + "°");
             }
         }
-
 
         static void drawMarker(Graphics g__, Pen pen_, int x_, int y_, int size_)
         {
@@ -658,7 +657,7 @@ namespace MeasDists
                 else
                 {
                     cnt_++;
-                    m.name = "M" + cnt_.ToString();
+                    m.name = "A" + cnt_.ToString();
                 }
             }
 
