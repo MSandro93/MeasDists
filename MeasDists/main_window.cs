@@ -520,7 +520,23 @@ namespace MeasDists
                 }
             }
 
-            updateListBox();
+            //rename measurements. In case on in the middle of the ist was removed and a new one is added. Its name is generated based opn the number of items in the list. so dublicates in nama appier.
+            int cnt_ = 0;
+            foreach (Measurement m in measurements)
+            {
+                if (m.name == "ref")
+                {
+                    continue;
+                }
+
+                else
+                {
+                    cnt_ ++;
+                    m.name = "M" + cnt_.ToString();
+                }
+            }
+
+                updateListBox();
 
             if (drawing_surface.Image != null)
             {
@@ -627,6 +643,22 @@ namespace MeasDists
                 {
                     angle_measurements.Remove(am);
                     break;
+                }
+            }
+
+            //rename measurements. In case on in the middle of the ist was removed and a new one is added. Its name is generated based opn the number of items in the list. so dublicates in nama appier.
+            int cnt_ = 0;
+            foreach (Angle_Measurement m in angle_measurements)
+            {
+                if (m.name == "ref")
+                {
+                    continue;
+                }
+
+                else
+                {
+                    cnt_++;
+                    m.name = "M" + cnt_.ToString();
                 }
             }
 
