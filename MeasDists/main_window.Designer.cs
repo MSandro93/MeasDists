@@ -44,6 +44,7 @@
             this.dbg1 = new System.Windows.Forms.Label();
             this.dbg2 = new System.Windows.Forms.Label();
             this.dbg3 = new System.Windows.Forms.Label();
+            this.remove_angle_measurement_butt = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -149,6 +150,7 @@
             this.angle_measurement_ListBox.Name = "angle_measurement_ListBox";
             this.angle_measurement_ListBox.Size = new System.Drawing.Size(141, 82);
             this.angle_measurement_ListBox.TabIndex = 9;
+            this.angle_measurement_ListBox.SelectedValueChanged += new System.EventHandler(this.angle_measurement_ListBox_SelectedValueChanged);
             // 
             // add_angle_measurement_butt
             // 
@@ -188,11 +190,23 @@
             this.dbg3.TabIndex = 13;
             this.dbg3.Text = "dbg3";
             // 
+            // remove_angle_measurement_butt
+            // 
+            this.remove_angle_measurement_butt.Enabled = false;
+            this.remove_angle_measurement_butt.Location = new System.Drawing.Point(977, 587);
+            this.remove_angle_measurement_butt.Name = "remove_angle_measurement_butt";
+            this.remove_angle_measurement_butt.Size = new System.Drawing.Size(141, 35);
+            this.remove_angle_measurement_butt.TabIndex = 14;
+            this.remove_angle_measurement_butt.Text = "&Remove angle measurement";
+            this.remove_angle_measurement_butt.UseVisualStyleBackColor = true;
+            this.remove_angle_measurement_butt.Click += new System.EventHandler(this.remove_angle_measurement_butt_Click);
+            // 
             // main_window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 647);
+            this.Controls.Add(this.remove_angle_measurement_butt);
             this.Controls.Add(this.dbg3);
             this.Controls.Add(this.dbg2);
             this.Controls.Add(this.dbg1);
@@ -233,6 +247,7 @@
         private System.Windows.Forms.Label dbg1;
         private System.Windows.Forms.Label dbg2;
         private System.Windows.Forms.Label dbg3;
+        private System.Windows.Forms.Button remove_angle_measurement_butt;
     }
 }
 

@@ -79,7 +79,7 @@ namespace MeasDists
             }
 
             draw_measuremnts("");
-            drawing_surface.Refresh();
+            draw_AngleMeasurements("");
         }
 
         private void rotate_scrollBar_ValueChanged(object sender, EventArgs e)
@@ -201,7 +201,6 @@ namespace MeasDists
 
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
                         break;
                     }
@@ -218,7 +217,6 @@ namespace MeasDists
 
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
                         sys_state = 101;
                         break;
@@ -237,7 +235,6 @@ namespace MeasDists
 
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
                         sys_state = 102;
                         break;
@@ -272,7 +269,6 @@ namespace MeasDists
 
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
                         sys_state = 4;
                         break;
@@ -310,7 +306,6 @@ namespace MeasDists
                         g_.Dispose();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
 
                         break;
@@ -337,7 +332,6 @@ namespace MeasDists
                         g_.Dispose();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
 
                         break;
@@ -367,7 +361,6 @@ namespace MeasDists
                         g_.Dispose();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
 
                         break;
@@ -423,7 +416,6 @@ namespace MeasDists
                         g_.Dispose();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-                        drawing_surface.Refresh();
 
                         break;
                     }
@@ -542,6 +534,7 @@ namespace MeasDists
             }
 
             draw_measuremnts("");
+            draw_AngleMeasurements("");
         }
 
         private void add_angle_measurement_butt_Click(object sender, EventArgs e)
@@ -607,11 +600,51 @@ namespace MeasDists
                 //
 
                 //draw lines
-                g_.DrawLine(p_black, am.a_px.X, am.a_px.Y, am.b_px.X, am.b_px.Y); //re-draw line from center marker to cursor
-                g_.DrawLine(p_black, am.a_px.X, am.a_px.Y, am.c_px.X, am.c_px.Y); //re-draw line from center maker to first angel marker                                                           //
-
+                g_.DrawLine(p_, am.a_px.X, am.a_px.Y, am.b_px.X, am.b_px.Y); //re-draw line from center marker to cursor
+                g_.DrawLine(p_, am.a_px.X, am.a_px.Y, am.c_px.X, am.c_px.Y); //re-draw line from center maker to first angel marker                                                           //
                 //
             }
+            drawing_surface.Refresh();
+        }
+
+        private void angle_measurement_ListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            char[] separators = new char[] { ' ', '|' };
+            String s = angle_measurement_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
+            draw_AngleMeasurements(s);
+
+            remove_angle_measurement_butt.Enabled = true;
+        }
+
+        private void remove_angle_measurement_butt_Click(object sender, EventArgs e)
+        {
+            char[] separators = new char[] { ' ', '|' };
+            String text_selected = angle_measurement_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
+
+            foreach (Angle_Measurement am in angle_measurements)
+            {
+                if (am.name == text_selected)
+                {
+                    angle_measurements.Remove(am);
+                    break;
+                }
+            }
+
+            updateAngleListBox();
+
+            if (drawing_surface.Image != null)
+            {
+                drawing_surface.Image.Dispose();
+            }
+            drawing_surface.Image = (Image)source_image.Clone();
+
+            if (grid_toggle_grid)
+            {
+                draw_grid(drawing_surface.Image, 10, 10);
+            }
+
+            draw_measuremnts("");
+            draw_AngleMeasurements("");
         }
     }
 }
