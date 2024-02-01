@@ -39,6 +39,11 @@
             this.measurements_ListBox = new System.Windows.Forms.ListBox();
             this.add_measurement_butt = new System.Windows.Forms.Button();
             this.remove_measurement_butt = new System.Windows.Forms.Button();
+            this.angle_measurement_ListBox = new System.Windows.Forms.ListBox();
+            this.add_angle_measurement_butt = new System.Windows.Forms.Button();
+            this.dbg1 = new System.Windows.Forms.Label();
+            this.dbg2 = new System.Windows.Forms.Label();
+            this.dbg3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -109,16 +114,16 @@
             // measurements_ListBox
             // 
             this.measurements_ListBox.FormattingEnabled = true;
-            this.measurements_ListBox.Location = new System.Drawing.Point(977, 192);
+            this.measurements_ListBox.Location = new System.Drawing.Point(977, 237);
             this.measurements_ListBox.Name = "measurements_ListBox";
-            this.measurements_ListBox.Size = new System.Drawing.Size(141, 238);
+            this.measurements_ListBox.Size = new System.Drawing.Size(141, 82);
             this.measurements_ListBox.TabIndex = 6;
             this.measurements_ListBox.SelectedValueChanged += new System.EventHandler(this.measurements_ListBox_SelectedValueChanged);
             // 
             // add_measurement_butt
             // 
             this.add_measurement_butt.Enabled = false;
-            this.add_measurement_butt.Location = new System.Drawing.Point(977, 449);
+            this.add_measurement_butt.Location = new System.Drawing.Point(977, 325);
             this.add_measurement_butt.Name = "add_measurement_butt";
             this.add_measurement_butt.Size = new System.Drawing.Size(141, 29);
             this.add_measurement_butt.TabIndex = 7;
@@ -129,7 +134,7 @@
             // remove_measurement_butt
             // 
             this.remove_measurement_butt.Enabled = false;
-            this.remove_measurement_butt.Location = new System.Drawing.Point(977, 493);
+            this.remove_measurement_butt.Location = new System.Drawing.Point(977, 360);
             this.remove_measurement_butt.Name = "remove_measurement_butt";
             this.remove_measurement_butt.Size = new System.Drawing.Size(141, 29);
             this.remove_measurement_butt.TabIndex = 8;
@@ -137,11 +142,62 @@
             this.remove_measurement_butt.UseVisualStyleBackColor = true;
             this.remove_measurement_butt.Click += new System.EventHandler(this.remove_measurement_butt_Click);
             // 
+            // angle_measurement_ListBox
+            // 
+            this.angle_measurement_ListBox.FormattingEnabled = true;
+            this.angle_measurement_ListBox.Location = new System.Drawing.Point(977, 464);
+            this.angle_measurement_ListBox.Name = "angle_measurement_ListBox";
+            this.angle_measurement_ListBox.Size = new System.Drawing.Size(141, 82);
+            this.angle_measurement_ListBox.TabIndex = 9;
+            // 
+            // add_angle_measurement_butt
+            // 
+            this.add_angle_measurement_butt.Enabled = false;
+            this.add_angle_measurement_butt.Location = new System.Drawing.Point(977, 552);
+            this.add_angle_measurement_butt.Name = "add_angle_measurement_butt";
+            this.add_angle_measurement_butt.Size = new System.Drawing.Size(141, 29);
+            this.add_angle_measurement_butt.TabIndex = 10;
+            this.add_angle_measurement_butt.Text = "Add An&gle measurement";
+            this.add_angle_measurement_butt.UseVisualStyleBackColor = true;
+            this.add_angle_measurement_butt.Click += new System.EventHandler(this.add_angle_measurement_butt_Click);
+            // 
+            // dbg1
+            // 
+            this.dbg1.AutoSize = true;
+            this.dbg1.Location = new System.Drawing.Point(12, 609);
+            this.dbg1.Name = "dbg1";
+            this.dbg1.Size = new System.Drawing.Size(31, 13);
+            this.dbg1.TabIndex = 11;
+            this.dbg1.Text = "dbg1";
+            // 
+            // dbg2
+            // 
+            this.dbg2.AutoSize = true;
+            this.dbg2.Location = new System.Drawing.Point(83, 609);
+            this.dbg2.Name = "dbg2";
+            this.dbg2.Size = new System.Drawing.Size(31, 13);
+            this.dbg2.TabIndex = 12;
+            this.dbg2.Text = "dbg2";
+            // 
+            // dbg3
+            // 
+            this.dbg3.AutoSize = true;
+            this.dbg3.Location = new System.Drawing.Point(141, 609);
+            this.dbg3.Name = "dbg3";
+            this.dbg3.Size = new System.Drawing.Size(31, 13);
+            this.dbg3.TabIndex = 13;
+            this.dbg3.Text = "dbg3";
+            // 
             // main_window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 647);
+            this.Controls.Add(this.dbg3);
+            this.Controls.Add(this.dbg2);
+            this.Controls.Add(this.dbg1);
+            this.Controls.Add(this.add_angle_measurement_butt);
+            this.Controls.Add(this.angle_measurement_ListBox);
             this.Controls.Add(this.remove_measurement_butt);
             this.Controls.Add(this.add_measurement_butt);
             this.Controls.Add(this.measurements_ListBox);
@@ -172,6 +228,11 @@
         private System.Windows.Forms.ListBox measurements_ListBox;
         private System.Windows.Forms.Button add_measurement_butt;
         private System.Windows.Forms.Button remove_measurement_butt;
+        private System.Windows.Forms.ListBox angle_measurement_ListBox;
+        private System.Windows.Forms.Button add_angle_measurement_butt;
+        private System.Windows.Forms.Label dbg1;
+        private System.Windows.Forms.Label dbg2;
+        private System.Windows.Forms.Label dbg3;
     }
 }
 

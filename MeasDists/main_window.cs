@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
+using System.Windows;
 
 namespace MeasDists
 {
@@ -19,16 +20,18 @@ namespace MeasDists
         float ref_mm;
         float mm_per_pixel;
 
-        Point ref_p1;
-        Point ref_p2;
+        System.Drawing.Point ref_p1;
+        System.Drawing.Point ref_p2;
 
-        Point current_p1;
-        Point current_p2;
+        System.Drawing.Point current_p1;
+        System.Drawing.Point current_p2;
+        System.Drawing.Point current_p3;
 
         Pen p_black = new Pen(Color.Black, 1);
         Pen p_red = new Pen(Color.Red, 1);
 
         List<Measurement> measurements = new List<Measurement>();
+        List<Angle_Measurement> angle_measurements = new List<Angle_Measurement>();
 
         public main_window()
         {
@@ -118,7 +121,7 @@ namespace MeasDists
         {
             //apply current rotaion so source iamge, thus rotation scroll bar is locked and rotation is fixed now
             Graphics g_ = Graphics.FromImage(img_);
-            g_.TranslateTransform(img_.Width / 2.0f, img_.Height / 2.0f); //set rotation point to center
+            g_.TranslateTransform(img_.Width / 2.0f, img_.Height / 2.0f); //set rotation System.Drawing.Point to center
             g_.RotateTransform((float)rotate_scrollBar.Value / 10.0f);
             g_.TranslateTransform((float)-img_.Width / 2.0f, (float)-img_.Height / 2.0f);
             g_.DrawImage(img_, 0, 0);  //"save" rotated image.
@@ -156,54 +159,129 @@ namespace MeasDists
             switch (sys_state)
             {
                 case 2:
-                {
-                        ref_p1 = new Point(e.Location.X, e.Location.Y);
+                    {
+                        ref_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
                         sys_state = 3;
                         break;
-                }
+                    }
 
                 case 3:
-                {
-                    ref_p2 = new Point(e.Location.X, e.Location.Y);
-                    sys_state = 4;
+                    {
+                        ref_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                        sys_state = 4;
 
 
-                    Inputbox ref_input_box = new Inputbox(this);
-                    ref_input_box.Show();
+                        Inputbox ref_input_box = new Inputbox(this);
+                        ref_input_box.Show();
 
-                    break;
-                }
+                        break;
+                    }
 
                 case 5:
-                {
-                    current_p1 = new Point(e.Location.X, e.Location.Y);
-                    sys_state = 6;
-                    break;
-                }
+                    {
+                        current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                        sys_state = 6;
+                        break;
+                    }
 
                 case 6:
-                {
-                    current_p2 = new Point(e.Location.X, e.Location.Y);
-                    sys_state = 5;
+                    {
+                        current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                        sys_state = 5;
 
                         measurements.Add(new Measurement(current_p1,
                                                          current_p2,
-                                                         new PointF(current_p1.X * mm_per_pixel, current_p1.Y * mm_per_pixel),
-                                                         new PointF(current_p2.X * mm_per_pixel, current_p2.Y * mm_per_pixel),
+                                                         new System.Drawing.PointF(current_p1.X * mm_per_pixel, current_p1.Y * mm_per_pixel),
+                                                         new System.Drawing.PointF(current_p2.X * mm_per_pixel, current_p2.Y * mm_per_pixel),
                                                          "M" + measurements.Count.ToString()
                                                         )
                                          );
 
                         updateListBox();
-                        draw_measuremnts("");
 
-                    break;
-                }
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+                        break;
+                    }
+
+                case 100: //wait for setting center for new angle measurement
+                    {
+                        current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+
+                        drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+                        sys_state = 101;
+                        break;
+                    }
+
+                case 101: //wait for setting Schenkel 1 of new angle measurement
+                    {
+                        current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+
+                        drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        g_.Dispose();
+
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+                        sys_state = 102;
+                        break;
+                    }
+
+                case 102: //wait for setting Schenkel 2 of new angle measurement
+                    {
+                        current_p3 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+
+                        drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        g_.Dispose();
+
+
+                        Vector vectorP1P2 = new Vector((current_p2.X - current_p1.X), (current_p2.Y - current_p1.Y));
+                        Vector vectorP1P3 = new Vector((e.Location.X - current_p1.X), (e.Location.Y - current_p1.Y));
+
+                        //calculate angle bwtween both vectors  
+                        float angle = Convert.ToSingle(Vector.AngleBetween(vectorP1P2, vectorP1P3));
+                        if (angle < 0)
+                        {
+                            angle = 180 + (180 + angle);  //snap over
+                        }
+                        //
+
+                        angle_measurements.Add(new Angle_Measurement(current_p1, current_p2, current_p3, angle, "A" + angle_measurements.Count+1.ToString()));
+
+                        updateAngleListBox();
+
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+                        sys_state = 4;
+                        break;
+                    }
 
                 default:
-                {
-                    break;  
-                }
+                    {
+                        break;
+                    }
             }
         }
 
@@ -212,61 +290,149 @@ namespace MeasDists
             switch (sys_state)
             {
                 case 3:  //draw line from ref_p1 to mouse position
-                {
-                    if (drawing_surface.Image != null)
                     {
-                        drawing_surface.Image.Dispose();
+                        if (drawing_surface.Image != null)
+                        {
+                            drawing_surface.Image.Dispose();
+                        }
+                        drawing_surface.Image = (Image)source_image.Clone();
+
+                        // draw grid at rotated image if toggled on.
+                        if (grid_toggle_grid)
+                        {
+                            drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                        }
+                        //
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                        g_.DrawLine(p_black, ref_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        g_.Dispose();
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+
+                        break;
                     }
-                    drawing_surface.Image = (Image)source_image.Clone();
-
-                    // draw grid at rotated image if toggled on.
-                    if (grid_toggle_grid)
-                    {
-                        drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
-                    }
-                    //
-
-                    Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                    g_.DrawLine(p_black, ref_p1, new Point(e.Location.X, e.Location.Y));
-                    g_.DrawImage(drawing_surface.Image, 0, 0);
-                    g_.Dispose();
-                    draw_measuremnts("");
-                    drawing_surface.Refresh();
-
-
-                    break;
-                }
 
                 case 6:  //draw line from current_p1 to mouse position
-                {
-                    if (drawing_surface.Image != null)
                     {
-                        drawing_surface.Image.Dispose();
-                    }
-                    drawing_surface.Image = (Image)source_image.Clone();
+                        if (drawing_surface.Image != null)
+                        {
+                            drawing_surface.Image.Dispose();
+                        }
+                        drawing_surface.Image = (Image)source_image.Clone();
 
-                    // draw grid at rotated image if toggled on.
-                    if (grid_toggle_grid)
+                        // draw grid at rotated image if toggled on.
+                        if (grid_toggle_grid)
+                        {
+                            drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                        }
+                        //
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                        g_.DrawLine(p_black, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        g_.Dispose();
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+
+                        break;
+                    }
+
+                case 101:
                     {
-                        drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                        if (drawing_surface.Image != null)
+                        {
+                            drawing_surface.Image.Dispose();
+                        }
+                        drawing_surface.Image = (Image)source_image.Clone();
+
+                        // draw grid at rotated image if toggled on.
+                        if (grid_toggle_grid)
+                        {
+                            drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                        }
+                        //
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+
+                        drawMarker(g_, p_black, current_p1.X, current_p1.Y, 7);
+
+                        g_.DrawLine(p_black, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        g_.Dispose();
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+
+                        break;
                     }
-                    //
 
-                    Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                    g_.DrawLine(p_black, current_p1, new Point(e.Location.X, e.Location.Y));
-                    g_.DrawImage(drawing_surface.Image, 0, 0);
-                    g_.Dispose();
-                    draw_measuremnts("");
-                    drawing_surface.Refresh();
+                case 102:
+                    {
+                        Vector vectorP1P2 = new Vector((current_p2.X - current_p1.X), (current_p2.Y - current_p1.Y));
+                        Vector vectorP1P3 = new Vector((e.Location.X - current_p1.X), (e.Location.Y - current_p1.Y));
+
+                        float startAngle = Convert.ToSingle(Vector.AngleBetween(new Vector(10.0, 0.0), vectorP1P2));
+                        float zwischenwinkel  = Convert.ToSingle(Vector.AngleBetween(vectorP1P2, vectorP1P3));
+                        if (zwischenwinkel < 0)
+                        {
+                            zwischenwinkel = 180 + (180 + zwischenwinkel);  //snap over
+                        }
 
 
-                    break;
-                }
+                        //dbg1.Text = startAngle.ToString("0.0");
+                        //dbg2.Text = zwischenwinkel.ToString("0.0");
 
-                default:
-                {
-                    break;
-                }
+                        if (drawing_surface.Image != null)
+                        {
+                            drawing_surface.Image.Dispose();
+                        }
+                        drawing_surface.Image = (Image)source_image.Clone();
+
+                        // draw grid at rotated image if toggled on.
+                        if (grid_toggle_grid)
+                        {
+                            drawing_surface.Image = draw_grid(drawing_surface.Image, 10, 10);
+                        }
+                        //
+
+                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+
+                        drawMarker(g_, p_black, current_p1.X, current_p1.Y, 7); // draw center marker
+
+                        g_.DrawLine(p_black, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y)); //draw line from center marker to cursor
+                        g_.DrawLine(p_black, current_p1, current_p2);                                           //re-draw line from center maker to first angel marker                                                           //
+
+                        drawMarker(g_, p_black, current_p2.X, current_p2.Y, 7); //re-draw secound marker (first angle point)
+
+                        //draw arc to indicate angel orientation
+                        int radius_circle = Convert.ToInt32(Math.Round(vectorP1P2.Length * 0.3));
+                        int center_x = current_p1.X - Convert.ToInt32(Math.Round(radius_circle / 2.0f));
+                        int center_y = current_p1.Y - Convert.ToInt32(Math.Round(radius_circle / 2.0f));
+                        //
+
+                        g_.DrawArc(p_black, center_x, center_y, radius_circle, radius_circle, startAngle, zwischenwinkel);
+
+                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        g_.Dispose();
+                        draw_measuremnts("");
+                        draw_AngleMeasurements("");
+                        drawing_surface.Refresh();
+
+                        break;
+                    }
+
+
+                 default:
+                    {
+                        break;
+                    }
 
             }
         }
@@ -281,13 +447,15 @@ namespace MeasDists
                     sys_state = 5;
                     set_ref_butt.Enabled = false;
 
-                    double ref_len_pxl = Math.Sqrt( Math.Pow(Math.Abs( ref_p1.X - ref_p2.X ), 2) + Math.Pow(Math.Abs(ref_p1.Y - ref_p2.Y), 2));
+                    double ref_len_pxl = Math.Sqrt(Math.Pow(Math.Abs(ref_p1.X - ref_p2.X), 2) + Math.Pow(Math.Abs(ref_p1.Y - ref_p2.Y), 2));
                     mm_per_pixel = ref_mm / Convert.ToSingle(ref_len_pxl);
 
-                    measurements.Add(new Measurement(ref_p1, ref_p2, new PointF(ref_p1.X * mm_per_pixel, ref_p1.Y * mm_per_pixel), new PointF(ref_p2.X * mm_per_pixel, ref_p2.Y * mm_per_pixel), "ref"));
+                    measurements.Add(new Measurement(ref_p1, ref_p2, new System.Drawing.PointF(ref_p1.X * mm_per_pixel, ref_p1.Y * mm_per_pixel), new System.Drawing.PointF(ref_p2.X * mm_per_pixel, ref_p2.Y * mm_per_pixel), "ref"));
                     updateListBox();
                     draw_measuremnts("");
-                    add_measurement_butt.Enabled=true;
+                    draw_AngleMeasurements("");
+                    add_measurement_butt.Enabled = true;
+                    add_angle_measurement_butt.Enabled = true;
                 }
             }
             else
@@ -302,7 +470,7 @@ namespace MeasDists
 
             foreach (Measurement m in measurements)
             {
-                measurements_ListBox.Items.Add(m.name + " | " + m.len_mm.ToString("0.000")+"mm");
+                measurements_ListBox.Items.Add(m.name + " | " + m.len_mm.ToString("0.000") + "mm");
             }
         }
 
@@ -324,7 +492,7 @@ namespace MeasDists
                 {
                     g_.DrawLine(p_black, m.a_px, m.b_px);
                 }
-                
+
                 g_.DrawImage(drawing_surface.Image, 0, 0);
                 g_.Dispose();
             }
@@ -374,6 +542,76 @@ namespace MeasDists
             }
 
             draw_measuremnts("");
+        }
+
+        private void add_angle_measurement_butt_Click(object sender, EventArgs e)
+        {
+            sys_state = 100;
+        }
+
+        private void updateAngleListBox()
+        {
+            angle_measurement_ListBox.Items.Clear();
+
+            foreach (Angle_Measurement am in angle_measurements)
+            {
+                angle_measurement_ListBox.Items.Add(am.name + " | " + am.angle.ToString("0.0") + "°");
+            }
+        }
+
+
+        static void drawMarker(Graphics g__, Pen pen_, int x_, int y_, int size_)
+        {
+            //draw third marker (second angle point)
+            g__.DrawLine(pen_, x_ - size_, y_, x_ + size_, y_);
+            g__.DrawLine(pen_, x_,y_ - size_, x_, y_+ size_);
+            //
+        }
+
+        static void drawMarker(Graphics g__, Pen pen_, System.Drawing.Point p_, int size_)
+        {
+            //draw third marker (second angle point)
+            g__.DrawLine(pen_, p_.X - size_, p_.Y, p_.X + size_, p_.Y);
+            g__.DrawLine(pen_, p_.X, p_.Y - size_, p_.X, p_.Y + size_);
+            //
+        }
+
+        private void draw_AngleMeasurements(String selcted_)
+        {
+            Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+            Pen p_;
+
+            foreach (Angle_Measurement am in angle_measurements)
+            {
+                if (am.name == selcted_)
+                {
+                    p_ = p_red;
+                }
+                else
+                {
+                    p_ = p_black;
+                }
+
+                drawMarker(g_, p_, am.a_px, 7); //draw center marker
+                drawMarker(g_, p_, am.b_px, 7); //draw first angle  marker
+                drawMarker(g_, p_, am.c_px, 7); //draw second angle  marker
+
+                //draw arc for indicating angle direction
+                Vector v1 = new Vector((am.b_px.X - am.a_px.X), (am.b_px.Y - am.a_px.Y));
+                float startAngle = Convert.ToSingle(Vector.AngleBetween(new Vector(10.0, 0.0), v1));
+                int radius_circle = Convert.ToInt32(Math.Round(v1.Length * 0.3));
+                int center_x = am.a_px.X - Convert.ToInt32(Math.Round(radius_circle / 2.0f));
+                int center_y = am.a_px.Y - Convert.ToInt32(Math.Round(radius_circle / 2.0f));
+
+                g_.DrawArc(p_, center_x, center_y, radius_circle, radius_circle, startAngle, am.angle);
+                //
+
+                //draw lines
+                g_.DrawLine(p_black, am.a_px.X, am.a_px.Y, am.b_px.X, am.b_px.Y); //re-draw line from center marker to cursor
+                g_.DrawLine(p_black, am.a_px.X, am.a_px.Y, am.c_px.X, am.c_px.Y); //re-draw line from center maker to first angel marker                                                           //
+
+                //
+            }
         }
     }
 }

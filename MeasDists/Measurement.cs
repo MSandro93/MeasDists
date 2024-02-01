@@ -28,4 +28,21 @@ namespace MeasDists
             name = name_;
         }
     }
+
+    internal class Angle_Measurement
+    {
+        public Point a_px, b_px, c_px;
+        public float angle;
+        public String name;
+
+        public Angle_Measurement(Point p1_px_, Point p2_px_, Point p3_px_, float angle_, String name_)
+        {
+            a_px = p1_px_;
+            b_px = p2_px_;
+            c_px = p3_px_;
+
+            angle = angle_;
+            name = name_;
+        }
+    }
 }
