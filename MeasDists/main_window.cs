@@ -45,14 +45,14 @@ namespace MeasDists
                 source_image = Clipboard.GetImage();
                 drawing_surface.Image = (Image)source_image.Clone();
 
-                sys_state = 1;
+                sys_state = 1; dbg3.Text = sys_state.ToString();
                 toggle_grid_butt.Enabled = true;
             }
 
             else
             {
                 MessageBox.Show("No image found in clipboard");
-                sys_state = 0;
+                sys_state = 0; dbg3.Text = sys_state.ToString();
                 toggle_grid_butt.Enabled = false;
             }
         }
@@ -109,7 +109,7 @@ namespace MeasDists
 
         private void set_ref_butt_Click(object sender, EventArgs e)
         {
-            sys_state = 2;
+            sys_state = 2; dbg3.Text = sys_state.ToString();
             rotate_scrollBar.Enabled = false;
 
             //apply current rotation to source iamge, thus rotation scroll bar is locked and rotation is fixed now
@@ -158,120 +158,187 @@ namespace MeasDists
         {
             switch (sys_state)
             {
-                case 2:
+                case 2: //set first ref point
                     {
-                        ref_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                        sys_state = 3;
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            ref_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                            sys_state = 3; dbg3.Text = sys_state.ToString();
+                        }
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            sys_state = 2; dbg3.Text = sys_state.ToString();
+                        }
                         break;
                     }
 
-                case 3:
+                case 3: //set second ref point
                     {
-                        ref_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                        sys_state = 4;
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            ref_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                            sys_state = 4; dbg3.Text = sys_state.ToString();
 
 
-                        Inputbox ref_input_box = new Inputbox(this);
-                        ref_input_box.Show();
-
+                            Inputbox ref_input_box = new Inputbox(this);
+                            ref_input_box.Show();
+                        }
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            sys_state = 2; dbg3.Text = sys_state.ToString();
+                        }
                         break;
                     }
 
-                case 5:
+                case 6: //set first point of new measurement 
                     {
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            if (grid_toggle_grid)
+                            {
+                                draw_grid(drawing_surface.Image, 10, 10);
+                            }
+
+                            draw_measuremnts("");
+                            draw_AngleMeasurements("");
+                            break;
+                        }
+                    
                         current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                        sys_state = 6;
+                        sys_state = 7; dbg3.Text = sys_state.ToString();
                         break;
                     }
 
-                case 6:
+                case 7: //set second point of new measurement 
                     {
-                        current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                        sys_state = 5;
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            drawing_surface.Image = (Image)source_image.Clone();
 
+                            if (grid_toggle_grid)
+                            {
+                                draw_grid(drawing_surface.Image, 10, 10);
+                            }
+                        }
 
-                        measurements.Add(new Measurement(current_p1,
+                        else if (e.Button == MouseButtons.Left)
+                        {
+                            current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+
+                            measurements.Add(new Measurement(current_p1,
                                                          current_p2,
                                                          new System.Drawing.PointF(current_p1.X * mm_per_pixel, current_p1.Y * mm_per_pixel),
                                                          new System.Drawing.PointF(current_p2.X * mm_per_pixel, current_p2.Y * mm_per_pixel),
                                                          "M" + (measurements.Count).ToString()
                                                         )
                                          );
+                            updateListBox();
+                        }
 
-                        updateListBox();
-
+                        sys_state = 5; dbg3.Text = sys_state.ToString();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-
                         break;
                     }
 
                 case 100: //wait for setting center for new angle measurement
                     {
-                        current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            drawing_surface.Image = (Image)source_image.Clone();
 
-                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                            if (grid_toggle_grid)
+                            {
+                                draw_grid(drawing_surface.Image, 10, 10);
+                            }
+                        }
 
-                        drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
-
-                        g_.DrawImage(drawing_surface.Image, 0, 0);
+                        else if (e.Button == MouseButtons.Left)
+                        {
+                            current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                            Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                            drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+                            g_.DrawImage(drawing_surface.Image, 0, 0);
+                            sys_state = 101; dbg3.Text = sys_state.ToString();
+                        }
 
                         draw_measuremnts("");
-                        draw_AngleMeasurements("");
-
-                        sys_state = 101;
+                        draw_AngleMeasurements(""); 
                         break;
                     }
 
                 case 101: //wait for setting Schenkel 1 of new angle measurement
                     {
-                        current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            drawing_surface.Image = (Image)source_image.Clone();
 
-                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                            if (grid_toggle_grid)
+                            {
+                                draw_grid(drawing_surface.Image, 10, 10);
+                            }
+                        }
 
-                        drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
-
-                        g_.DrawImage(drawing_surface.Image, 0, 0);
-                        g_.Dispose();
+                        else if (e.Button == MouseButtons.Left)
+                        {
+                            current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                            Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                            drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+                            g_.DrawImage(drawing_surface.Image, 0, 0);
+                            g_.Dispose();
+                            sys_state = 102; dbg3.Text = sys_state.ToString();
+                        }
 
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-
-                        sys_state = 102;
+ 
                         break;
                     }
 
                 case 102: //wait for setting Schenkel 2 of new angle measurement
                     {
-                        current_p3 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-
-                        Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-
-                        drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
-
-                        g_.DrawImage(drawing_surface.Image, 0, 0);
-                        g_.Dispose();
-
-
-                        Vector vectorP1P2 = new Vector((current_p2.X - current_p1.X), (current_p2.Y - current_p1.Y));
-                        Vector vectorP1P3 = new Vector((e.Location.X - current_p1.X), (e.Location.Y - current_p1.Y));
-
-                        //calculate angle bwtween both vectors  
-                        float angle = Convert.ToSingle(Vector.AngleBetween(vectorP1P2, vectorP1P3));
-                        if (angle < 0)
+                        if (e.Button == MouseButtons.Right)
                         {
-                            angle = 180 + (180 + angle);  //snap over
+                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            drawing_surface.Image = (Image)source_image.Clone();
+
+                            if (grid_toggle_grid)
+                            {
+                                draw_grid(drawing_surface.Image, 10, 10);
+                            }
                         }
-                        //
 
-                        angle_measurements.Add(new Angle_Measurement(current_p1, current_p2, current_p3, angle, "A" + (angle_measurements.Count+1).ToString()));
+                        else if (e.Button == MouseButtons.Left)
+                        {
+                            current_p3 = new System.Drawing.Point(e.Location.X, e.Location.Y);
+                            Graphics g_ = Graphics.FromImage(drawing_surface.Image);
+                            drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+                            g_.DrawImage(drawing_surface.Image, 0, 0);
+                            g_.Dispose();
 
-                        updateAngleListBox();
+
+                            Vector vectorP1P2 = new Vector((current_p2.X - current_p1.X), (current_p2.Y - current_p1.Y));
+                            Vector vectorP1P3 = new Vector((e.Location.X - current_p1.X), (e.Location.Y - current_p1.Y));
+
+                            //calculate angle between both vectors  
+                            float angle = Convert.ToSingle(Vector.AngleBetween(vectorP1P2, vectorP1P3));
+                            if (angle < 0)
+                            {
+                                angle = 180 + (180 + angle);  //snap over
+                            }
+                            //
+
+                            angle_measurements.Add(new Angle_Measurement(current_p1, current_p2, current_p3, angle, "A" + (angle_measurements.Count + 1).ToString()));
+                            updateAngleListBox();
+
+                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                        }
 
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-
-                        sys_state = 4;
                         break;
                     } 
 
@@ -288,6 +355,7 @@ namespace MeasDists
             {
                 case 3:  //draw line from ref_p1 to mouse position
                     {
+
                         if (drawing_surface.Image != null)
                         {
                             drawing_surface.Image.Dispose();
@@ -312,8 +380,14 @@ namespace MeasDists
                         break;
                     }
 
-                case 6:  //draw line from current_p1 to mouse position
+                case 7:  //draw line from current_p1 to mouse position
                     {
+                        if (e.Button == MouseButtons.Right) //termiante measurement
+                        {
+                            sys_state = 5;
+                            break;
+                        }
+
                         if (drawing_surface.Image != null)
                         {
                             drawing_surface.Image.Dispose();
@@ -430,6 +504,7 @@ namespace MeasDists
             }
         }
 
+
         public void SetRef_mm(float f_, bool valid_)
         {
             if (valid_)
@@ -437,7 +512,7 @@ namespace MeasDists
                 if (f_ != 0.0f)
                 {
                     ref_mm = f_;
-                    sys_state = 5;
+                    sys_state = 5; dbg3.Text = sys_state.ToString();
                     set_ref_butt.Enabled = false;
 
                     double ref_len_pxl = Math.Sqrt(Math.Pow(Math.Abs(ref_p1.X - ref_p2.X), 2) + Math.Pow(Math.Abs(ref_p1.Y - ref_p2.Y), 2));
@@ -453,7 +528,7 @@ namespace MeasDists
             }
             else
             {
-                sys_state = 4;
+                sys_state = 1; dbg3.Text = sys_state.ToString();
             }
         }
 
@@ -469,7 +544,10 @@ namespace MeasDists
 
         private void add_measurement_butt_Click(object sender, EventArgs e)
         {
-            sys_state = 5;
+            if (sys_state == 5)
+            {
+                sys_state = 6; dbg3.Text = sys_state.ToString();
+            }
         }
 
         private void draw_measuremnts(String selected)
@@ -494,6 +572,10 @@ namespace MeasDists
 
         private void measurements_ListBox_SelectedValueChanged(object sender, EventArgs e)
         {
+            if (measurements_ListBox.SelectedItems.Count < 1)
+            {
+                return;
+            }
             char[] separators = new char[] { ' ', '|' };
             String s = measurements_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
             draw_measuremnts(s);
@@ -503,6 +585,11 @@ namespace MeasDists
 
         private void remove_measurement_butt_Click(object sender, EventArgs e)
         {
+            if (measurements_ListBox.SelectedItems.Count < 1)
+            {
+                return; //in case of no items are selected, leave
+            }
+
             char[] separators = new char[] { ' ', '|' };
             String text_selected = measurements_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
 
@@ -536,7 +623,7 @@ namespace MeasDists
                 }
             }
 
-                updateListBox();
+            updateListBox();
 
             if (drawing_surface.Image != null)
             {
@@ -555,7 +642,10 @@ namespace MeasDists
 
         private void add_angle_measurement_butt_Click(object sender, EventArgs e)
         {
-            sys_state = 100;
+            if (sys_state == 5)
+            {
+                sys_state = 100; dbg3.Text = sys_state.ToString();
+            }
         }
 
         private void updateAngleListBox()
@@ -624,6 +714,11 @@ namespace MeasDists
 
         private void angle_measurement_ListBox_SelectedValueChanged(object sender, EventArgs e)
         {
+            if (angle_measurement_ListBox.SelectedItems.Count < 1)
+            {
+                return;
+            }
+
             char[] separators = new char[] { ' ', '|' };
             String s = angle_measurement_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
             draw_AngleMeasurements(s);
@@ -633,6 +728,11 @@ namespace MeasDists
 
         private void remove_angle_measurement_butt_Click(object sender, EventArgs e)
         {
+            if (angle_measurement_ListBox.SelectedItems.Count < 1)
+            {
+                return; //in case of no items are selected, leave
+            }
+
             char[] separators = new char[] { ' ', '|' };
             String text_selected = angle_measurement_ListBox.SelectedItems[0].ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
 
@@ -676,6 +776,31 @@ namespace MeasDists
 
             draw_measuremnts("");
             draw_AngleMeasurements("");
+        }
+
+        private void main_window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                if ((sys_state == 3) ||
+                    (sys_state == 6) ||
+                    (sys_state == 7) ||
+                    (sys_state == 100) ||
+                    (sys_state == 101) ||
+                    (sys_state == 102))
+                {
+                    sys_state = 5; dbg3.Text = sys_state.ToString();
+                    drawing_surface.Image = (Image)source_image.Clone();
+
+                    if (grid_toggle_grid)
+                    {
+                        draw_grid(drawing_surface.Image, 10, 10);
+                    }
+
+                    draw_measuremnts("");
+                    draw_AngleMeasurements("");
+                }
+            }
         }
     }
 }

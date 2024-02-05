@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.drawing_surface = new System.Windows.Forms.PictureBox();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.load_butt = new System.Windows.Forms.Button();
             this.toggle_grid_butt = new System.Windows.Forms.Button();
             this.rotate_scrollBar = new System.Windows.Forms.HScrollBar();
@@ -46,7 +44,6 @@
             this.dbg3 = new System.Windows.Forms.Label();
             this.remove_angle_measurement_butt = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // drawing_surface
@@ -221,10 +218,11 @@
             this.Controls.Add(this.toggle_grid_butt);
             this.Controls.Add(this.load_butt);
             this.Controls.Add(this.drawing_surface);
+            this.KeyPreview = true;
             this.Name = "main_window";
             this.Text = "MeasDists";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.main_window_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,7 +231,6 @@
         #endregion
 
         private System.Windows.Forms.PictureBox drawing_surface;
-        private System.Windows.Forms.BindingSource bindingSource1;
         private System.Windows.Forms.Button load_butt;
         private System.Windows.Forms.Button toggle_grid_butt;
         private System.Windows.Forms.HScrollBar rotate_scrollBar;
