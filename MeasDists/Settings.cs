@@ -33,7 +33,7 @@ namespace MeasDists
         private void button1_Click(object sender, EventArgs e)
         {
             ColorDialog MyDialog = new ColorDialog();
-            MyDialog.AllowFullOpen = false;
+            MyDialog.AllowFullOpen = true;
             MyDialog.ShowHelp = true;
             MyDialog.Color = col_grid.BackColor;
 

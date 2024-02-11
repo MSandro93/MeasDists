@@ -16,7 +16,7 @@ namespace MeasDists
 {
     public partial class main_window : Form
     {
-        String conf_file = ".\\config.conf";
+        String conf_file = "config.conf";
         Image source_image = null;
         int sys_state = 0;
         bool grid_toggle_grid = false;
