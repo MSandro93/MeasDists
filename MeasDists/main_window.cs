@@ -152,7 +152,6 @@ namespace MeasDists
         {
             if ((e.Location.X > drawing_surface.Image.Width) || (e.Location.Y > drawing_surface.Image.Height)) //cursor not at iamge
             {
-                drawing_surface.Cursor = Cursors.Arrow;
                 return;
             }
 
