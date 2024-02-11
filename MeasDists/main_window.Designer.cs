@@ -43,6 +43,8 @@
             this.dbg2 = new System.Windows.Forms.Label();
             this.dbg3 = new System.Windows.Forms.Label();
             this.remove_angle_measurement_butt = new System.Windows.Forms.Button();
+            this.rot_label = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,7 +67,7 @@
             this.load_butt.TabIndex = 1;
             this.load_butt.Text = "&Load from clipbaord";
             this.load_butt.UseVisualStyleBackColor = true;
-            this.load_butt.Click += new System.EventHandler(this.button1_Click);
+            this.load_butt.Click += new System.EventHandler(this.load_butt_Click);
             // 
             // toggle_grid_butt
             // 
@@ -80,6 +82,7 @@
             // 
             // rotate_scrollBar
             // 
+            this.rotate_scrollBar.Enabled = false;
             this.rotate_scrollBar.LargeChange = 5;
             this.rotate_scrollBar.Location = new System.Drawing.Point(977, 105);
             this.rotate_scrollBar.Maximum = 200;
@@ -93,6 +96,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Enabled = false;
             this.label1.Location = new System.Drawing.Point(974, 92);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(73, 13);
@@ -101,6 +105,7 @@
             // 
             // set_ref_butt
             // 
+            this.set_ref_butt.Enabled = false;
             this.set_ref_butt.Location = new System.Drawing.Point(977, 149);
             this.set_ref_butt.Name = "set_ref_butt";
             this.set_ref_butt.Size = new System.Drawing.Size(141, 23);
@@ -111,6 +116,7 @@
             // 
             // measurements_ListBox
             // 
+            this.measurements_ListBox.Enabled = false;
             this.measurements_ListBox.FormattingEnabled = true;
             this.measurements_ListBox.Location = new System.Drawing.Point(977, 237);
             this.measurements_ListBox.Name = "measurements_ListBox";
@@ -142,6 +148,7 @@
             // 
             // angle_measurement_ListBox
             // 
+            this.angle_measurement_ListBox.Enabled = false;
             this.angle_measurement_ListBox.FormattingEnabled = true;
             this.angle_measurement_ListBox.Location = new System.Drawing.Point(977, 464);
             this.angle_measurement_ListBox.Name = "angle_measurement_ListBox";
@@ -198,11 +205,32 @@
             this.remove_angle_measurement_butt.UseVisualStyleBackColor = true;
             this.remove_angle_measurement_butt.Click += new System.EventHandler(this.remove_angle_measurement_butt_Click);
             // 
+            // rot_label
+            // 
+            this.rot_label.AutoSize = true;
+            this.rot_label.Enabled = false;
+            this.rot_label.Location = new System.Drawing.Point(1101, 92);
+            this.rot_label.Name = "rot_label";
+            this.rot_label.Size = new System.Drawing.Size(17, 13);
+            this.rot_label.TabIndex = 15;
+            this.rot_label.Text = "0°";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(631, 587);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(98, 35);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // main_window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 647);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.rot_label);
             this.Controls.Add(this.remove_angle_measurement_butt);
             this.Controls.Add(this.dbg3);
             this.Controls.Add(this.dbg2);
@@ -245,6 +273,8 @@
         private System.Windows.Forms.Label dbg2;
         private System.Windows.Forms.Label dbg3;
         private System.Windows.Forms.Button remove_angle_measurement_butt;
+        private System.Windows.Forms.Label rot_label;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
 using System.Windows;
+using System.Reflection.Emit;
 
 namespace MeasDists
 {
@@ -40,21 +41,7 @@ namespace MeasDists
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (Clipboard.ContainsImage())
-            {
-                source_image = Clipboard.GetImage();
-                drawing_surface.Image = (Image)source_image.Clone();
 
-                sys_state = 1; dbg3.Text = sys_state.ToString();
-                toggle_grid_butt.Enabled = true;
-            }
-
-            else
-            {
-                MessageBox.Show("No image found in clipboard");
-                sys_state = 0; dbg3.Text = sys_state.ToString();
-                toggle_grid_butt.Enabled = false;
-            }
         }
 
         //TODO: maybe fix the grid to be more homogeneous. Not sure about this so far..
@@ -94,6 +81,7 @@ namespace MeasDists
 
 
             drawing_surface.Image = apply_roation(drawing_surface.Image, rotate_scrollBar.Value / 10.0f);
+            rot_label.Text = (rotate_scrollBar.Value / 10.0f).ToString("0.0");
 
             // draw grid at rotated image if toggled on.
             if (grid_toggle_grid)
@@ -110,7 +98,9 @@ namespace MeasDists
         private void set_ref_butt_Click(object sender, EventArgs e)
         {
             sys_state = 2; dbg3.Text = sys_state.ToString();
+            label1.Enabled = false;
             rotate_scrollBar.Enabled = false;
+            rot_label.Enabled = false;
 
             //apply current rotation to source iamge, thus rotation scroll bar is locked and rotation is fixed now
             source_image = apply_roation(source_image, rotate_scrollBar.Value / 10.0f);
@@ -160,6 +150,7 @@ namespace MeasDists
             {
                 case 2: //set first ref point
                     {
+
                         if (e.Button == MouseButtons.Left)
                         {
                             ref_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
@@ -192,6 +183,8 @@ namespace MeasDists
 
                 case 6: //set first point of new measurement 
                     {
+                        add_angle_measurement_butt.Enabled = false;
+
                         if (e.Button == MouseButtons.Right)
                         {
                             sys_state = 5; dbg3.Text = sys_state.ToString();
@@ -226,6 +219,14 @@ namespace MeasDists
                         {
                             current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
 
+                            if (current_p1 == current_p2)
+                            {
+                                MessageBox.Show("Invalid measurement. Length has to be > 0.");
+                                sys_state = 5; dbg3.Text = sys_state.ToString();
+                                add_angle_measurement_butt.Enabled = true;
+                                break;
+                            }
+
                             measurements.Add(new Measurement(current_p1,
                                                          current_p2,
                                                          new System.Drawing.PointF(current_p1.X * mm_per_pixel, current_p1.Y * mm_per_pixel),
@@ -239,11 +240,14 @@ namespace MeasDists
                         sys_state = 5; dbg3.Text = sys_state.ToString();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
+                        add_angle_measurement_butt.Enabled = true;
                         break;
                     }
 
                 case 100: //wait for setting center for new angle measurement
                     {
+                        add_measurement_butt.Enabled = false;
+
                         if (e.Button == MouseButtons.Right)
                         {
                             sys_state = 5; dbg3.Text = sys_state.ToString();
@@ -335,6 +339,7 @@ namespace MeasDists
                             updateAngleListBox();
 
                             sys_state = 5; dbg3.Text = sys_state.ToString();
+                            add_measurement_butt.Enabled = true;
                         }
 
                         draw_measuremnts("");
@@ -524,6 +529,8 @@ namespace MeasDists
                     draw_AngleMeasurements("");
                     add_measurement_butt.Enabled = true;
                     add_angle_measurement_butt.Enabled = true;
+                    measurements_ListBox.Enabled = true;
+                    angle_measurement_ListBox.Enabled = true;
                 }
             }
             else
@@ -800,6 +807,30 @@ namespace MeasDists
                     draw_measuremnts("");
                     draw_AngleMeasurements("");
                 }
+            }
+        }
+
+        private void load_butt_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsImage())
+            {
+                source_image = Clipboard.GetImage();
+                drawing_surface.Image = (Image)source_image.Clone();
+
+                sys_state = 1; dbg3.Text = sys_state.ToString();
+
+                toggle_grid_butt.Enabled = true;
+                label1.Enabled = true;
+                rotate_scrollBar.Enabled = true;
+                set_ref_butt.Enabled = true;
+                rot_label.Enabled = true;
+            }
+
+            else
+            {
+                MessageBox.Show("No image found in clipboard");
+                sys_state = 0; dbg3.Text = sys_state.ToString();
+                toggle_grid_butt.Enabled = false;
             }
         }
     }
