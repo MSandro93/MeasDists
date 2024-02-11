@@ -32,44 +32,17 @@ namespace MeasDists
 
         private void button1_Click(object sender, EventArgs e)
         {
-            ColorDialog MyDialog = new ColorDialog();
-            MyDialog.AllowFullOpen = true;
-            MyDialog.ShowHelp = true;
-            MyDialog.Color = col_grid.BackColor;
 
-            if (MyDialog.ShowDialog() == DialogResult.OK)
-            {
-                col_grid.BackColor = MyDialog.Color;
-                gridCol = MyDialog.Color;
-            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            ColorDialog MyDialog = new ColorDialog();
-            MyDialog.AllowFullOpen = false;
-            MyDialog.ShowHelp = true;
-            MyDialog.Color = col_grid.BackColor;
 
-            if (MyDialog.ShowDialog() == DialogResult.OK)
-            {
-                col_marker.BackColor = MyDialog.Color;
-                markersCol = MyDialog.Color;
-            }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            ColorDialog MyDialog = new ColorDialog();
-            MyDialog.AllowFullOpen = false;
-            MyDialog.ShowHelp = true;
-            MyDialog.Color = col_grid.BackColor;
 
-            if (MyDialog.ShowDialog() == DialogResult.OK)
-            {
-                col_selmarker.BackColor = MyDialog.Color;
-                selMarkersCol = MyDialog.Color;
-            }
         }
 
         private void Ok_butt_Click(object sender, EventArgs e)
@@ -88,6 +61,48 @@ namespace MeasDists
             col_grid.BackColor      = gridCol;
             col_marker.BackColor    = markersCol;
             col_selmarker.BackColor = selMarkersCol;
+        }
+
+        private void col_grid_Click(object sender, EventArgs e)
+        {
+            ColorDialog MyDialog = new ColorDialog();
+            MyDialog.AllowFullOpen = true;
+            MyDialog.ShowHelp = true;
+            MyDialog.Color = col_grid.BackColor;
+
+            if (MyDialog.ShowDialog() == DialogResult.OK)
+            {
+                col_grid.BackColor = MyDialog.Color;
+                gridCol = MyDialog.Color;
+            }
+        }
+
+        private void col_marker_Click(object sender, EventArgs e)
+        {
+            ColorDialog MyDialog = new ColorDialog();
+            MyDialog.AllowFullOpen = false;
+            MyDialog.ShowHelp = true;
+            MyDialog.Color = col_grid.BackColor;
+
+            if (MyDialog.ShowDialog() == DialogResult.OK)
+            {
+                col_marker.BackColor = MyDialog.Color;
+                markersCol = MyDialog.Color;
+            }
+        }
+
+        private void col_selmarker_Click(object sender, EventArgs e)
+        {
+            ColorDialog MyDialog = new ColorDialog();
+            MyDialog.AllowFullOpen = false;
+            MyDialog.ShowHelp = true;
+            MyDialog.Color = col_grid.BackColor;
+
+            if (MyDialog.ShowDialog() == DialogResult.OK)
+            {
+                col_selmarker.BackColor = MyDialog.Color;
+                selMarkersCol = MyDialog.Color;
+            }
         }
     }
 }
