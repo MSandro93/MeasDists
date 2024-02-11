@@ -10,11 +10,13 @@ using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
 using System.Windows;
 using System.Reflection.Emit;
+using System.IO;
 
 namespace MeasDists
 {
     public partial class main_window : Form
     {
+        String conf_file = ".\\config.conf";
         Image source_image = null;
         int sys_state = 0;
         bool grid_toggle_grid = false;
@@ -31,7 +33,7 @@ namespace MeasDists
         Pen p_markers    = new Pen(Color.Black, 1);
         Pen p_SelMarkers = new Pen(Color.Red  , 1);
         Pen p_grid       = new Pen(Color.Red  , 1);
-        Pen p_red = new Pen(Color.Red, 1);
+        Pen p_red        = new Pen(Color.Red, 1);
 
         List<Measurement> measurements = new List<Measurement>();
         List<Angle_Measurement> angle_measurements = new List<Angle_Measurement>();
@@ -867,6 +869,14 @@ namespace MeasDists
             }
 
 
+
+            StreamWriter outputFile = new StreamWriter(conf_file);
+
+            outputFile.WriteLine("Grid_Color;"            + p_grid.Color.R       + ";" + p_grid.Color.G       + ";" + p_grid.Color.B);
+            outputFile.WriteLine("Marker_Color;"          + p_markers.Color.R    + ";" + p_markers.Color.G    + ";" + p_markers.Color.B);
+            outputFile.WriteLine("Selected_Marker_Color;" + p_SelMarkers.Color.R + ";" + p_SelMarkers.Color.G + ";" + p_SelMarkers.Color.B);
+            outputFile.Close();
+
             if (source_image != null)
             {
                 if (drawing_surface.Image != null)
@@ -883,6 +893,66 @@ namespace MeasDists
                 draw_measuremnts("");
                 draw_AngleMeasurements("");
             }
+        }
+
+        private void main_window_Load(object sender, EventArgs e)
+        {
+            if (File.Exists(conf_file))
+            {
+                FileInfo info = new FileInfo(conf_file);
+                if (info.Length > 1024)
+                {
+                    MessageBox.Show("Invalide config file " + conf_file + " Filesize too large.");
+                    return;
+                }
+
+                String[] lines = File.ReadAllLines(conf_file);
+
+                if (lines.Length < 3)
+                {
+                    MessageBox.Show("Invalid config file" + conf_file);
+                    return;
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    string[] cols = lines[i].Split(';');
+
+                    if (cols.Length < 4)
+                    {
+                        MessageBox.Show("Invalid config file" + conf_file);
+                        return;
+                    }
+
+                    byte r = Convert.ToByte(cols[1]);
+                    byte g = Convert.ToByte(cols[2]);
+                    byte b = Convert.ToByte(cols[3]);
+
+                    switch (cols[0])
+                    {
+                        case "Grid_Color":
+                            {
+                                p_grid.Color = Color.FromArgb(r, g, b);
+                                break;
+                            }
+                        case "Marker_Color":
+                            {
+                                p_markers.Color = Color.FromArgb(r, g, b);
+                                break;
+                            }
+                        case "Selected_Marker_Color":
+                            {
+                                p_SelMarkers.Color = Color.FromArgb(r, g, b);
+                                break;
+                            }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Invalide config file " + conf_file + " does not exist. Loading default config.");
+            }
+
         }
     }
 }

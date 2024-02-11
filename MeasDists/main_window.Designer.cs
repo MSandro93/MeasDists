@@ -250,6 +250,7 @@
             this.KeyPreview = true;
             this.Name = "main_window";
             this.Text = "MeasDists";
+            this.Load += new System.EventHandler(this.main_window_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.main_window_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).EndInit();
             this.ResumeLayout(false);
