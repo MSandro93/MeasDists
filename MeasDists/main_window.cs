@@ -76,11 +76,10 @@ namespace MeasDists
             {
                 drawing_surface.Image.Dispose();
             }
-            drawing_surface.Image = (Image)source_image.Clone();
+
+            drawing_surface.Image = apply_roation((Image)source_image.Clone(), rotate_scrollBar.Value / 10.0f);
 
 
-
-            drawing_surface.Image = apply_roation(drawing_surface.Image, rotate_scrollBar.Value / 10.0f);
             rot_label.Text = (rotate_scrollBar.Value / 10.0f).ToString("0.0");
 
             // draw grid at rotated image if toggled on.
@@ -102,20 +101,23 @@ namespace MeasDists
             rotate_scrollBar.Enabled = false;
             rot_label.Enabled = false;
 
-            //apply current rotation to source iamge, thus rotation scroll bar is locked and rotation is fixed now
+            //apply current rotation to source image, thus rotation scroll bar is locked and rotation is fixed now
             source_image = apply_roation(source_image, rotate_scrollBar.Value / 10.0f);
             //
         }
 
         private Image apply_roation(Image img_, float angle_)
         {
-            //apply current rotaion so source iamge, thus rotation scroll bar is locked and rotation is fixed now
-            Graphics g_ = Graphics.FromImage(img_);
+            //apply current rotation so source image, thus rotation scroll bar is locked and rotation is fixed now
+            Bitmap b = new Bitmap(img_.Width, img_.Height);
+            Graphics g_ = Graphics.FromImage(b);
+
             g_.TranslateTransform(img_.Width / 2.0f, img_.Height / 2.0f); //set rotation System.Drawing.Point to center
-            g_.RotateTransform((float)rotate_scrollBar.Value / 10.0f);
+            g_.RotateTransform(angle_ / 10.0f);
             g_.TranslateTransform((float)-img_.Width / 2.0f, (float)-img_.Height / 2.0f);
-            g_.DrawImage(img_, 0, 0);  //"save" rotated image.
-            return img_;
+            g_.DrawImage(img_, 0, 0);  //"save" rotated image
+
+            return b;
             //
         }
 
