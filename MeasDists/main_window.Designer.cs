@@ -44,7 +44,7 @@
             this.dbg3 = new System.Windows.Forms.Label();
             this.remove_angle_measurement_butt = new System.Windows.Forms.Button();
             this.rot_label = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.color_settings_butt = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.drawing_surface)).BeginInit();
             this.SuspendLayout();
             // 
@@ -215,21 +215,22 @@
             this.rot_label.TabIndex = 15;
             this.rot_label.Text = "0°";
             // 
-            // button1
+            // color_settings_butt
             // 
-            this.button1.Location = new System.Drawing.Point(631, 587);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(98, 35);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.color_settings_butt.Location = new System.Drawing.Point(854, 587);
+            this.color_settings_butt.Name = "color_settings_butt";
+            this.color_settings_butt.Size = new System.Drawing.Size(98, 35);
+            this.color_settings_butt.TabIndex = 16;
+            this.color_settings_butt.Text = "&Color Settings";
+            this.color_settings_butt.UseVisualStyleBackColor = true;
+            this.color_settings_butt.Click += new System.EventHandler(this.color_settings_butt_Click);
             // 
             // main_window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 647);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.color_settings_butt);
             this.Controls.Add(this.rot_label);
             this.Controls.Add(this.remove_angle_measurement_butt);
             this.Controls.Add(this.dbg3);
@@ -274,7 +275,7 @@
         private System.Windows.Forms.Label dbg3;
         private System.Windows.Forms.Button remove_angle_measurement_butt;
         private System.Windows.Forms.Label rot_label;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button color_settings_butt;
     }
 }
 

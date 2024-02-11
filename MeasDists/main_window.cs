@@ -28,7 +28,9 @@ namespace MeasDists
         System.Drawing.Point current_p2;
         System.Drawing.Point current_p3;
 
-        Pen p_black = new Pen(Color.Black, 1);
+        Pen p_markers    = new Pen(Color.Black, 1);
+        Pen p_SelMarkers = new Pen(Color.Red  , 1);
+        Pen p_grid       = new Pen(Color.Red  , 1);
         Pen p_red = new Pen(Color.Red, 1);
 
         List<Measurement> measurements = new List<Measurement>();
@@ -93,7 +95,6 @@ namespace MeasDists
             drawing_surface.Refresh();
         }
 
-
         private void set_ref_butt_Click(object sender, EventArgs e)
         {
             sys_state = 2; dbg3.Text = sys_state.ToString();
@@ -121,7 +122,6 @@ namespace MeasDists
             //
         }
 
-
         private Image draw_grid(Image img_, int cnt_x, int cnt_y)
         {
             Graphics g_ = Graphics.FromImage(img_);
@@ -130,7 +130,7 @@ namespace MeasDists
             int width_grid = (int)(drawing_surface.Width / 10.0f);
             for (int x_ = width_grid; x_ < drawing_surface.Width; x_ += width_grid)
             {
-                g_.DrawLine(p_red, x_, 0, x_, drawing_surface.Height);
+                g_.DrawLine(p_grid, x_, 0, x_, drawing_surface.Height);
             }
             //
 
@@ -138,7 +138,7 @@ namespace MeasDists
             int height_grid = (int)(drawing_surface.Height / 10.0f);
             for (int y_ = height_grid; y_ < drawing_surface.Height; y_ += height_grid)
             {
-                g_.DrawLine(p_red, 0, y_, drawing_surface.Width, y_);
+                g_.DrawLine(p_grid, 0, y_, drawing_surface.Width, y_);
             }
             //
 
@@ -271,7 +271,7 @@ namespace MeasDists
                         {
                             current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
                             Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                            drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+                            drawMarker(g_, p_markers, e.Location.X, e.Location.Y, 7);
                             g_.DrawImage(drawing_surface.Image, 0, 0);
                             sys_state = 101; dbg3.Text = sys_state.ToString();
                         }
@@ -298,7 +298,7 @@ namespace MeasDists
                         {
                             current_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
                             Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                            drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+                            drawMarker(g_, p_markers, e.Location.X, e.Location.Y, 7);
                             g_.DrawImage(drawing_surface.Image, 0, 0);
                             g_.Dispose();
                             sys_state = 102; dbg3.Text = sys_state.ToString();
@@ -327,7 +327,7 @@ namespace MeasDists
                         {
                             current_p3 = new System.Drawing.Point(e.Location.X, e.Location.Y);
                             Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                            drawMarker(g_, p_black, e.Location.X, e.Location.Y, 7);
+                            drawMarker(g_, p_markers, e.Location.X, e.Location.Y, 7);
                             g_.DrawImage(drawing_surface.Image, 0, 0);
                             g_.Dispose();
 
@@ -383,7 +383,7 @@ namespace MeasDists
                         //
 
                         Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                        g_.DrawLine(p_black, ref_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
+                        g_.DrawLine(p_markers, ref_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
                         g_.DrawImage(drawing_surface.Image, 0, 0);
                         g_.Dispose();
                         draw_measuremnts("");
@@ -415,7 +415,7 @@ namespace MeasDists
                         //
 
                         Graphics g_ = Graphics.FromImage(drawing_surface.Image);
-                        g_.DrawLine(p_black, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
+                        g_.DrawLine(p_markers, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
                         g_.DrawImage(drawing_surface.Image, 0, 0);
                         g_.Dispose();
                         draw_measuremnts("");
@@ -441,9 +441,9 @@ namespace MeasDists
 
                         Graphics g_ = Graphics.FromImage(drawing_surface.Image);
 
-                        drawMarker(g_, p_black, current_p1.X, current_p1.Y, 7);
+                        drawMarker(g_, p_markers, current_p1.X, current_p1.Y, 7);
 
-                        g_.DrawLine(p_black, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
+                        g_.DrawLine(p_markers, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y));
                         g_.DrawImage(drawing_surface.Image, 0, 0);
                         g_.Dispose();
                         draw_measuremnts("");
@@ -483,12 +483,12 @@ namespace MeasDists
 
                         Graphics g_ = Graphics.FromImage(drawing_surface.Image);
 
-                        drawMarker(g_, p_black, current_p1.X, current_p1.Y, 7); // draw center marker
+                        drawMarker(g_, p_markers, current_p1.X, current_p1.Y, 7); // draw center marker
 
-                        g_.DrawLine(p_black, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y)); //draw line from center marker to cursor
-                        g_.DrawLine(p_black, current_p1, current_p2);                                           //re-draw line from center maker to first angel marker                                                           //
+                        g_.DrawLine(p_markers, current_p1, new System.Drawing.Point(e.Location.X, e.Location.Y)); //draw line from center marker to cursor
+                        g_.DrawLine(p_markers, current_p1, current_p2);                                           //re-draw line from center maker to first angel marker                                                           //
 
-                        drawMarker(g_, p_black, current_p2.X, current_p2.Y, 7); //re-draw secound marker (first angle point)
+                        drawMarker(g_, p_markers, current_p2.X, current_p2.Y, 7); //re-draw secound marker (first angle point)
 
                         //draw arc to indicate angel orientation
                         int radius_circle = Convert.ToInt32(Math.Round(vectorP1P2.Length * 0.3));
@@ -496,7 +496,7 @@ namespace MeasDists
                         int center_y = current_p1.Y - Convert.ToInt32(Math.Round(radius_circle / 2.0f));
                         //
 
-                        g_.DrawArc(p_black, center_x, center_y, radius_circle, radius_circle, startAngle, zwischenwinkel);
+                        g_.DrawArc(p_markers, center_x, center_y, radius_circle, radius_circle, startAngle, zwischenwinkel);
 
                         g_.DrawImage(drawing_surface.Image, 0, 0);
                         g_.Dispose();
@@ -514,7 +514,6 @@ namespace MeasDists
 
             }
         }
-
 
         public void SetRef_mm(float f_, bool valid_)
         {
@@ -570,11 +569,11 @@ namespace MeasDists
                 Graphics g_ = Graphics.FromImage(drawing_surface.Image);
                 if (m.name == selected)
                 {
-                    g_.DrawLine(p_red, m.a_px, m.b_px);
+                    g_.DrawLine(p_SelMarkers, m.a_px, m.b_px);
                 }
                 else
                 {
-                    g_.DrawLine(p_black, m.a_px, m.b_px);
+                    g_.DrawLine(p_markers, m.a_px, m.b_px);
                 }
 
                 g_.DrawImage(drawing_surface.Image, 0, 0);
@@ -697,11 +696,11 @@ namespace MeasDists
             {
                 if (am.name == selcted_)
                 {
-                    p_ = p_red;
+                    p_ = p_SelMarkers;
                 }
                 else
                 {
-                    p_ = p_black;
+                    p_ = p_markers;
                 }
 
                 drawMarker(g_, p_, am.a_px, 7); //draw center marker
@@ -841,6 +840,48 @@ namespace MeasDists
                 MessageBox.Show("No image found in clipboard");
                 sys_state = 0; dbg3.Text = sys_state.ToString();
                 toggle_grid_butt.Enabled = false;
+            }
+        }
+
+        private void color_settings_butt_Click(object sender, EventArgs e)
+        {
+            Settings setts = new Settings(this, p_grid.Color, p_markers.Color, p_SelMarkers.Color);
+            setts.ShowDialog();
+        }
+
+        public void setColors(Color colGrid_, Color colMarkers_, Color colSelMarkers_)
+        {
+            if (colGrid_ != Color.Empty)
+            {
+                p_grid = new Pen(colGrid_);
+            }
+
+            if (colMarkers_ != Color.Empty)
+            {
+                p_markers = new Pen(colMarkers_);
+            }
+
+            if (colSelMarkers_ != Color.Empty)
+            {
+                p_SelMarkers = new Pen(colSelMarkers_);
+            }
+
+
+            if (source_image != null)
+            {
+                if (drawing_surface.Image != null)
+                {
+                    drawing_surface.Image.Dispose();
+                }
+                drawing_surface.Image = (Image)source_image.Clone();
+
+                if (grid_toggle_grid)
+                {
+                    draw_grid(drawing_surface.Image, 10, 10);
+                }
+
+                draw_measuremnts("");
+                draw_AngleMeasurements("");
             }
         }
     }
