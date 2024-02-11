@@ -150,6 +150,12 @@ namespace MeasDists
 
         private void drawing_surface_MouseClick(object sender, MouseEventArgs e)
         {
+            if ((e.Location.X > drawing_surface.Image.Width) || (e.Location.Y > drawing_surface.Image.Height)) //cursor not at iamge
+            {
+                drawing_surface.Cursor = Cursors.Arrow;
+                return;
+            }
+
             switch (sys_state)
             {
                 case 2: //set first ref point
@@ -366,6 +372,19 @@ namespace MeasDists
 
         private void drawing_surface_MouseMove(object sender, MouseEventArgs e)
         {
+            if(drawing_surface.Image == null)
+            {
+                return;
+            }
+
+            if ((e.Location.X > drawing_surface.Image.Width) || (e.Location.Y > drawing_surface.Image.Height)) //cursor not at iamge
+            {
+                drawing_surface.Cursor = Cursors.Arrow;
+                return;
+            }
+
+            drawing_surface.Cursor = Cursors.Cross;
+
             switch (sys_state)
             {
                 case 3:  //draw line from ref_p1 to mouse position

@@ -50,7 +50,8 @@
             // 
             // drawing_surface
             // 
-            this.drawing_surface.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.drawing_surface.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.drawing_surface.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.drawing_surface.Location = new System.Drawing.Point(12, 12);
             this.drawing_surface.Name = "drawing_surface";
             this.drawing_surface.Size = new System.Drawing.Size(940, 560);
