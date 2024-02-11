@@ -59,5 +59,9 @@ namespace MeasDists
                 parent_.SetRef_mm(0.0f, false);
             }
         }
+
+        private void ref_textBox_TextChanged(object sender, EventArgs e)
+        {
+        }
     }
 }

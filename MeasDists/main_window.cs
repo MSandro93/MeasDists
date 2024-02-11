@@ -172,6 +172,12 @@ namespace MeasDists
                             ref_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
                             sys_state = 4; dbg3.Text = sys_state.ToString();
 
+                            if (ref_p1 == ref_p2)
+                            {
+                                MessageBox.Show("Invalid measurement. Length has to be > 0.");
+                                sys_state = 1; dbg3.Text = sys_state.ToString();
+                                break;
+                            }
 
                             Inputbox ref_input_box = new Inputbox(this);
                             ref_input_box.Show();
@@ -415,7 +421,6 @@ namespace MeasDists
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
 
-
                         break;
                     }
 
@@ -443,7 +448,6 @@ namespace MeasDists
                         g_.Dispose();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
-
 
                         break;
                     }
@@ -647,6 +651,7 @@ namespace MeasDists
 
             draw_measuremnts("");
             draw_AngleMeasurements("");
+            remove_measurement_butt.Enabled = false;
         }
 
         private void add_angle_measurement_butt_Click(object sender, EventArgs e)
@@ -785,6 +790,7 @@ namespace MeasDists
 
             draw_measuremnts("");
             draw_AngleMeasurements("");
+            remove_angle_measurement_butt.Enabled = false;
         }
 
         private void main_window_KeyDown(object sender, KeyEventArgs e)
@@ -808,6 +814,8 @@ namespace MeasDists
 
                     draw_measuremnts("");
                     draw_AngleMeasurements("");
+                    add_measurement_butt.Enabled = true;
+                    add_angle_measurement_butt.Enabled = true;
                 }
             }
         }

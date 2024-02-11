@@ -48,6 +48,7 @@
             this.ref_textBox.Name = "ref_textBox";
             this.ref_textBox.Size = new System.Drawing.Size(87, 20);
             this.ref_textBox.TabIndex = 1;
+            this.ref_textBox.TextChanged += new System.EventHandler(this.ref_textBox_TextChanged);
             // 
             // button1
             // 
