@@ -869,13 +869,13 @@ namespace MeasDists
             }
 
 
-
+            //write colors to config file
             StreamWriter outputFile = new StreamWriter(conf_file);
-
             outputFile.WriteLine("Grid_Color;"            + p_grid.Color.R       + ";" + p_grid.Color.G       + ";" + p_grid.Color.B);
             outputFile.WriteLine("Marker_Color;"          + p_markers.Color.R    + ";" + p_markers.Color.G    + ";" + p_markers.Color.B);
             outputFile.WriteLine("Selected_Marker_Color;" + p_SelMarkers.Color.R + ";" + p_SelMarkers.Color.G + ";" + p_SelMarkers.Color.B);
             outputFile.Close();
+            //
 
             if (source_image != null)
             {
@@ -914,6 +914,8 @@ namespace MeasDists
                     return;
                 }
 
+                byte r, g, b;
+                bool valid_rgb = true;
                 for (int i = 0; i < 3; i++)
                 {
                     string[] cols = lines[i].Split(';');
@@ -924,9 +926,15 @@ namespace MeasDists
                         return;
                     }
 
-                    byte r = Convert.ToByte(cols[1]);
-                    byte g = Convert.ToByte(cols[2]);
-                    byte b = Convert.ToByte(cols[3]);
+                    valid_rgb &= byte.TryParse(cols[1], out r);
+                    valid_rgb &= byte.TryParse(cols[2], out g);
+                    valid_rgb &= byte.TryParse(cols[3], out b);
+
+                    if (!valid_rgb)
+                    {
+                        MessageBox.Show("Invalid config file" + conf_file);
+                        return;
+                    }
 
                     switch (cols[0])
                     {
