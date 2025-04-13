@@ -99,7 +99,7 @@ namespace MeasDists
 
         private void set_ref_butt_Click(object sender, EventArgs e)
         {
-            sys_state = 2; dbg3.Text = sys_state.ToString();
+            sys_state = 2; //dbg3.Text = sys_state.ToString();
             label1.Enabled = false;
             rotate_scrollBar.Enabled = false;
             rot_label.Enabled = false;
@@ -163,11 +163,11 @@ namespace MeasDists
                         if (e.Button == MouseButtons.Left)
                         {
                             ref_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                            sys_state = 3; dbg3.Text = sys_state.ToString();
+                            sys_state = 3; //dbg3.Text = sys_state.ToString();
                         }
                         if (e.Button == MouseButtons.Right)
                         {
-                            sys_state = 2; dbg3.Text = sys_state.ToString();
+                            sys_state = 2; //dbg3.Text = sys_state.ToString();
                         }
                         break;
                     }
@@ -177,12 +177,12 @@ namespace MeasDists
                         if (e.Button == MouseButtons.Left)
                         {
                             ref_p2 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                            sys_state = 4; dbg3.Text = sys_state.ToString();
+                            sys_state = 4; //dbg3.Text = sys_state.ToString();
 
                             if (ref_p1 == ref_p2)
                             {
                                 MessageBox.Show("Invalid measurement. Length has to be > 0.");
-                                sys_state = 1; dbg3.Text = sys_state.ToString();
+                                sys_state = 1; //dbg3.Text = sys_state.ToString();
                                 break;
                             }
 
@@ -191,7 +191,7 @@ namespace MeasDists
                         }
                         if (e.Button == MouseButtons.Right)
                         {
-                            sys_state = 2; dbg3.Text = sys_state.ToString();
+                            sys_state = 2; //dbg3.Text = sys_state.ToString();
                         }
                         break;
                     }
@@ -202,7 +202,7 @@ namespace MeasDists
 
                         if (e.Button == MouseButtons.Right)
                         {
-                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            sys_state = 5; //dbg3.Text = sys_state.ToString();
                             if (grid_toggle_grid)
                             {
                                 draw_grid(drawing_surface.Image, 10, 10);
@@ -214,7 +214,7 @@ namespace MeasDists
                         }
                     
                         current_p1 = new System.Drawing.Point(e.Location.X, e.Location.Y);
-                        sys_state = 7; dbg3.Text = sys_state.ToString();
+                        sys_state = 7; //dbg3.Text = sys_state.ToString();
                         break;
                     }
 
@@ -237,7 +237,7 @@ namespace MeasDists
                             if (current_p1 == current_p2)
                             {
                                 MessageBox.Show("Invalid measurement. Length has to be > 0.");
-                                sys_state = 5; dbg3.Text = sys_state.ToString();
+                                sys_state = 5; //dbg3.Text = sys_state.ToString();
                                 add_angle_measurement_butt.Enabled = true;
                                 break;
                             }
@@ -252,7 +252,7 @@ namespace MeasDists
                             updateListBox();
                         }
 
-                        sys_state = 5; dbg3.Text = sys_state.ToString();
+                        sys_state = 5; //dbg3.Text = sys_state.ToString();
                         draw_measuremnts("");
                         draw_AngleMeasurements("");
                         add_angle_measurement_butt.Enabled = true;
@@ -265,7 +265,7 @@ namespace MeasDists
 
                         if (e.Button == MouseButtons.Right)
                         {
-                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            sys_state = 5; //dbg3.Text = sys_state.ToString();
                             drawing_surface.Image = (Image)source_image.Clone();
 
                             if (grid_toggle_grid)
@@ -280,7 +280,7 @@ namespace MeasDists
                             Graphics g_ = Graphics.FromImage(drawing_surface.Image);
                             drawMarker(g_, p_markers, e.Location.X, e.Location.Y, 7);
                             g_.DrawImage(drawing_surface.Image, 0, 0);
-                            sys_state = 101; dbg3.Text = sys_state.ToString();
+                            sys_state = 101; //dbg3.Text = sys_state.ToString();
                         }
 
                         draw_measuremnts("");
@@ -292,7 +292,7 @@ namespace MeasDists
                     {
                         if (e.Button == MouseButtons.Right)
                         {
-                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            sys_state = 5; //dbg3.Text = sys_state.ToString();
                             drawing_surface.Image = (Image)source_image.Clone();
 
                             if (grid_toggle_grid)
@@ -308,7 +308,7 @@ namespace MeasDists
                             drawMarker(g_, p_markers, e.Location.X, e.Location.Y, 7);
                             g_.DrawImage(drawing_surface.Image, 0, 0);
                             g_.Dispose();
-                            sys_state = 102; dbg3.Text = sys_state.ToString();
+                            sys_state = 102; //dbg3.Text = sys_state.ToString();
                         }
 
                         draw_measuremnts("");
@@ -321,7 +321,7 @@ namespace MeasDists
                     {
                         if (e.Button == MouseButtons.Right)
                         {
-                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            sys_state = 5; //dbg3.Text = sys_state.ToString();
                             drawing_surface.Image = (Image)source_image.Clone();
 
                             if (grid_toggle_grid)
@@ -353,7 +353,7 @@ namespace MeasDists
                             angle_measurements.Add(new Angle_Measurement(current_p1, current_p2, current_p3, angle, "A" + (angle_measurements.Count + 1).ToString()));
                             updateAngleListBox();
 
-                            sys_state = 5; dbg3.Text = sys_state.ToString();
+                            sys_state = 5; //dbg3.Text = sys_state.ToString();
                             add_measurement_butt.Enabled = true;
                         }
 
@@ -542,7 +542,7 @@ namespace MeasDists
                 if (f_ != 0.0f)
                 {
                     ref_mm = f_;
-                    sys_state = 5; dbg3.Text = sys_state.ToString();
+                    sys_state = 5; //dbg3.Text = sys_state.ToString();
                     set_ref_butt.Enabled = false;
 
                     double ref_len_pxl = Math.Sqrt(Math.Pow(Math.Abs(ref_p1.X - ref_p2.X), 2) + Math.Pow(Math.Abs(ref_p1.Y - ref_p2.Y), 2));
@@ -560,7 +560,7 @@ namespace MeasDists
             }
             else
             {
-                sys_state = 1; dbg3.Text = sys_state.ToString();
+                sys_state = 1; //dbg3.Text = sys_state.ToString();
             }
         }
 
@@ -578,7 +578,7 @@ namespace MeasDists
         {
             if (sys_state == 5)
             {
-                sys_state = 6; dbg3.Text = sys_state.ToString();
+                sys_state = 6; //dbg3.Text = sys_state.ToString();
             }
         }
 
@@ -677,7 +677,7 @@ namespace MeasDists
         {
             if (sys_state == 5)
             {
-                sys_state = 100; dbg3.Text = sys_state.ToString();
+                sys_state = 100; //dbg3.Text = sys_state.ToString();
             }
         }
 
@@ -823,7 +823,7 @@ namespace MeasDists
                     (sys_state == 101) ||
                     (sys_state == 102))
                 {
-                    sys_state = 5; dbg3.Text = sys_state.ToString();
+                    sys_state = 5; //dbg3.Text = sys_state.ToString();
                     drawing_surface.Image = (Image)source_image.Clone();
 
                     if (grid_toggle_grid)
@@ -846,7 +846,7 @@ namespace MeasDists
                 source_image = Clipboard.GetImage();
                 drawing_surface.Image = (Image)source_image.Clone();
 
-                sys_state = 1; dbg3.Text = sys_state.ToString();
+                sys_state = 1; //dbg3.Text = sys_state.ToString();
 
                 toggle_grid_butt.Enabled = true;
                 label1.Enabled = true;
@@ -858,7 +858,7 @@ namespace MeasDists
             else
             {
                 MessageBox.Show("No image found in clipboard");
-                sys_state = 0; dbg3.Text = sys_state.ToString();
+                sys_state = 0; //dbg3.Text = sys_state.ToString();
                 toggle_grid_butt.Enabled = false;
             }
         }
@@ -979,6 +979,16 @@ namespace MeasDists
                 MessageBox.Show("Invalide config file " + conf_file + " does not exist. Loading default config.");
             }
 
+        }
+
+        private void main_window_Resize(object sender, EventArgs e)
+        {
+            drawing_surface.Width   = this.Width  - 210;
+            drawing_surface.Height  = this.Height - 120;
+
+            color_settings_butt.Location = new System.Drawing.Point(this.Width - 296, this.Height - 87);
+
+            controls_groupbox.Location = new System.Drawing.Point(this.Width - 182, 7);
         }
     }
 }
