@@ -1042,6 +1042,11 @@ namespace MeasDists
             //redraw image
             float ratio_drawingarea = drawing_surface.Height / (drawing_surface.Width + 0.0f);
 
+            if (resized_image == null)
+            {
+                return;
+            }
+
             if (ratio_source_image < ratio_drawingarea) // landscape
             {
 
