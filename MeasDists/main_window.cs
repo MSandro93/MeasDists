@@ -11,6 +11,7 @@ using static System.Windows.Forms.AxHost;
 using System.Windows;
 using System.Reflection.Emit;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 namespace MeasDists
 {
@@ -18,10 +19,14 @@ namespace MeasDists
     {
         String conf_file = "config.conf";
         Image source_image = null;
+        Image resized_image = null;
         int sys_state = 0;
         bool grid_toggle_grid = false;
         float ref_mm;
         float mm_per_pixel;
+        int newWidth = 1;
+        int newHeight = 1;
+        float ratio_source_image = 1.0f;
 
         System.Drawing.Point ref_p1;
         System.Drawing.Point ref_p2;
@@ -57,7 +62,7 @@ namespace MeasDists
             {
                 drawing_surface.Image.Dispose();
             }
-            drawing_surface.Image = (Image)source_image.Clone();
+            drawing_surface.Image = (Image)resized_image.Clone();
 
             if (sys_state < 5) //before the rotation slider is locked, the source image stays unmodified in memory. After lokcking the rotation, the source iamge is overwritten in memory. Applying the rotation again to it leads to additional rotation which shall not happen
             {
@@ -81,7 +86,7 @@ namespace MeasDists
                 drawing_surface.Image.Dispose();
             }
 
-            drawing_surface.Image = apply_roation((Image)source_image.Clone(), rotate_scrollBar.Value / 10.0f);
+            drawing_surface.Image = apply_roation((Image)resized_image.Clone(), rotate_scrollBar.Value / 10.0f);
 
 
             rot_label.Text = (rotate_scrollBar.Value / 10.0f).ToString("0.0");
@@ -104,8 +109,11 @@ namespace MeasDists
             rotate_scrollBar.Enabled = false;
             rot_label.Enabled = false;
 
+            this.MaximumSize = this.Size;
+            this.MinimumSize = this.Size;
+
             //apply current rotation to source image, thus rotation scroll bar is locked and rotation is fixed now
-            source_image = apply_roation(source_image, rotate_scrollBar.Value / 10.0f);
+            resized_image = apply_roation(resized_image, rotate_scrollBar.Value / 10.0f);
             //
         }
 
@@ -150,6 +158,11 @@ namespace MeasDists
 
         private void drawing_surface_MouseClick(object sender, MouseEventArgs e)
         {
+            if (sys_state < 1)
+            {
+                return;
+            }
+
             if ((e.Location.X > drawing_surface.Image.Width) || (e.Location.Y > drawing_surface.Image.Height)) //cursor not at iamge
             {
                 return;
@@ -222,7 +235,7 @@ namespace MeasDists
                     {
                         if (e.Button == MouseButtons.Right)
                         {
-                            drawing_surface.Image = (Image)source_image.Clone();
+                            drawing_surface.Image = (Image)resized_image.Clone();
 
                             if (grid_toggle_grid)
                             {
@@ -266,7 +279,7 @@ namespace MeasDists
                         if (e.Button == MouseButtons.Right)
                         {
                             sys_state = 5; //dbg3.Text = sys_state.ToString();
-                            drawing_surface.Image = (Image)source_image.Clone();
+                            drawing_surface.Image = (Image)resized_image.Clone();
 
                             if (grid_toggle_grid)
                             {
@@ -293,7 +306,7 @@ namespace MeasDists
                         if (e.Button == MouseButtons.Right)
                         {
                             sys_state = 5; //dbg3.Text = sys_state.ToString();
-                            drawing_surface.Image = (Image)source_image.Clone();
+                            drawing_surface.Image = (Image)resized_image.Clone();
 
                             if (grid_toggle_grid)
                             {
@@ -322,7 +335,7 @@ namespace MeasDists
                         if (e.Button == MouseButtons.Right)
                         {
                             sys_state = 5; //dbg3.Text = sys_state.ToString();
-                            drawing_surface.Image = (Image)source_image.Clone();
+                            drawing_surface.Image = (Image)resized_image.Clone();
 
                             if (grid_toggle_grid)
                             {
@@ -393,7 +406,7 @@ namespace MeasDists
                         {
                             drawing_surface.Image.Dispose();
                         }
-                        drawing_surface.Image = (Image)source_image.Clone();
+                        drawing_surface.Image = (Image)resized_image.Clone();
 
                         // draw grid at rotated image if toggled on.
                         if (grid_toggle_grid)
@@ -425,7 +438,7 @@ namespace MeasDists
                         {
                             drawing_surface.Image.Dispose();
                         }
-                        drawing_surface.Image = (Image)source_image.Clone();
+                        drawing_surface.Image = (Image)resized_image.Clone();
 
                         // draw grid at rotated image if toggled on.
                         if (grid_toggle_grid)
@@ -450,7 +463,7 @@ namespace MeasDists
                         {
                             drawing_surface.Image.Dispose();
                         }
-                        drawing_surface.Image = (Image)source_image.Clone();
+                        drawing_surface.Image = (Image)resized_image.Clone();
 
                         // draw grid at rotated image if toggled on.
                         if (grid_toggle_grid)
@@ -492,7 +505,7 @@ namespace MeasDists
                         {
                             drawing_surface.Image.Dispose();
                         }
-                        drawing_surface.Image = (Image)source_image.Clone();
+                        drawing_surface.Image = (Image)resized_image.Clone();
 
                         // draw grid at rotated image if toggled on.
                         if (grid_toggle_grid)
@@ -661,7 +674,7 @@ namespace MeasDists
             {
                 drawing_surface.Image.Dispose();
             }
-            drawing_surface.Image = (Image)source_image.Clone();
+            drawing_surface.Image = (Image)resized_image.Clone();
 
             if (grid_toggle_grid)
             {
@@ -800,7 +813,7 @@ namespace MeasDists
             {
                 drawing_surface.Image.Dispose();
             }
-            drawing_surface.Image = (Image)source_image.Clone();
+            drawing_surface.Image = (Image)resized_image.Clone();
 
             if (grid_toggle_grid)
             {
@@ -824,7 +837,7 @@ namespace MeasDists
                     (sys_state == 102))
                 {
                     sys_state = 5; //dbg3.Text = sys_state.ToString();
-                    drawing_surface.Image = (Image)source_image.Clone();
+                    drawing_surface.Image = (Image)resized_image.Clone();
 
                     if (grid_toggle_grid)
                     {
@@ -843,8 +856,41 @@ namespace MeasDists
         {
             if (Clipboard.ContainsImage())
             {
+                measurements_ListBox.Items.Clear();
+                angle_measurement_ListBox.Items.Clear();
+
                 source_image = Clipboard.GetImage();
-                drawing_surface.Image = (Image)source_image.Clone();
+                ratio_source_image = source_image.Height / (source_image.Width + 0.0f);
+
+
+                int newWidth = 1;
+                int newHeight = 1;
+
+                float ratio_drawingarea = drawing_surface.Height / (drawing_surface.Width + 0.0f);
+
+                if (ratio_source_image < ratio_drawingarea) // landscape
+                {
+                    
+                    newWidth = drawing_surface.Width;
+                    newHeight = Convert.ToInt32(Math.Round(drawing_surface.Width * ratio_source_image));
+                }
+                else // portrait
+                {
+                    newHeight = drawing_surface.Height;
+                    newWidth = Convert.ToInt32(Math.Round(drawing_surface.Height / ratio_source_image));
+                }
+
+                Bitmap b = new Bitmap(drawing_surface.Width, drawing_surface.Height);
+                Graphics g = Graphics.FromImage((Image)b);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic; g.DrawImage(source_image, 0, 0, newWidth, newHeight);
+                g.Dispose();
+                if (drawing_surface.Image != null)
+                {
+                    drawing_surface.Image.Dispose();
+                }
+                resized_image = (Image)b.Clone();
+                drawing_surface.Image = resized_image;
+
 
                 sys_state = 1; //dbg3.Text = sys_state.ToString();
 
@@ -853,6 +899,9 @@ namespace MeasDists
                 rotate_scrollBar.Enabled = true;
                 set_ref_butt.Enabled = true;
                 rot_label.Enabled = true;
+
+                this.MaximumSize = new System.Drawing.Size(0, 0);
+                this.MinimumSize = new System.Drawing.Size(1150, 680);
             }
 
             else
@@ -861,6 +910,7 @@ namespace MeasDists
                 sys_state = 0; //dbg3.Text = sys_state.ToString();
                 toggle_grid_butt.Enabled = false;
             }
+
         }
 
         private void color_settings_butt_Click(object sender, EventArgs e)
@@ -901,7 +951,7 @@ namespace MeasDists
                 {
                     drawing_surface.Image.Dispose();
                 }
-                drawing_surface.Image = (Image)source_image.Clone();
+                drawing_surface.Image = (Image)resized_image.Clone();
 
                 if (grid_toggle_grid)
                 {
@@ -983,12 +1033,43 @@ namespace MeasDists
 
         private void main_window_Resize(object sender, EventArgs e)
         {
+            if (sys_state > 1) // resizíng only allowed before setting reference
+            {
+                return;
+            }
+
             drawing_surface.Width   = this.Width  - 210;
             drawing_surface.Height  = this.Height - 120;
 
             color_settings_butt.Location = new System.Drawing.Point(this.Width - 296, this.Height - 87);
 
             controls_groupbox.Location = new System.Drawing.Point(this.Width - 182, 7);
+
+            //redraw image
+            float ratio_drawingarea = drawing_surface.Height / (drawing_surface.Width + 0.0f);
+
+            if (ratio_source_image < ratio_drawingarea) // landscape
+            {
+
+                newWidth = drawing_surface.Width;
+                newHeight = Convert.ToInt32(Math.Round(drawing_surface.Width * ratio_source_image));
+            }
+            else // portrait
+            {
+                newHeight = drawing_surface.Height;
+                newWidth = Convert.ToInt32(Math.Round(drawing_surface.Height / ratio_source_image));
+            }
+
+            Bitmap b = new Bitmap(drawing_surface.Width, drawing_surface.Height);
+            Graphics g = Graphics.FromImage((Image)b);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic; g.DrawImage(source_image, 0, 0, newWidth, newHeight);
+            g.Dispose();
+            if (drawing_surface.Image != null)
+            {
+                drawing_surface.Image.Dispose();
+            }
+            resized_image = (Image)b.Clone();
+            drawing_surface.Image = resized_image;
         }
     }
 }

@@ -227,6 +227,7 @@
             this.Controls.Add(this.color_settings_butt);
             this.Controls.Add(this.drawing_surface);
             this.KeyPreview = true;
+            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1150, 680);
             this.Name = "main_window";
             this.Text = "MeasDists";
