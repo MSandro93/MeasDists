@@ -80,12 +80,6 @@ namespace MeasDists
 
         private void rotate_scrollBar_ValueChanged(object sender, EventArgs e)
         {
-
-            if (drawing_surface.Image != null)
-            {
-                drawing_surface.Image.Dispose();
-            }
-
             drawing_surface.Image = apply_roation((Image)resized_image.Clone(), rotate_scrollBar.Value / 10.0f);
 
 
